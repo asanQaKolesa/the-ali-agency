@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE.ALI.AGENCY — Full-Cycle Marketing & Production</title>
+  <title>THE.ALI.AGENCY — Performance & Production</title>
 
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Шрифты: Unbounded (дерзкий акцидентный) + Inter + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -17,15 +17,18 @@
       theme: {
         extend: {
           fontFamily: {
+            unbounded: ['Unbounded', 'sans-serif'],
             sans: ['Inter', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
             brand: {
-              bg: '#0A0B0E',
               coral: '#FF4820',
               emerald: '#10B981',
-              zinc: '#9CA3AF',
+              dark: '#0F1117',
+              gray: '#64748B',
+              surface: '#FFFFFF',
+              bg: '#F5F5F7',
             }
           }
         }
@@ -37,290 +40,262 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      background-color: #0A0B0E;
-      color: #FFFFFF;
+      background-color: #F5F5F7;
+      color: #0F1117;
       font-family: 'Inter', sans-serif;
-      overflow: hidden;
-      height: 100vh;
-      width: 100vw;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Нижний оптический блюр с маской без искусственного темного градиента */
-    .bottom-blur-overlay {
-      position: fixed;
-      inset: 0;
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      mask-image: linear-gradient(to top, black 0%, transparent 45%);
-      -webkit-mask-image: linear-gradient(to top, black 0%, transparent 45%);
-      pointer-events: none;
-      z-index: 1;
+    /* Дизайнерская светлая сетка Swiss Grid */
+    .swiss-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
     }
 
-    /* Эффект Liquid Glass с неоновым контуром */
-    .liquid-glass {
-      background: rgba(18, 20, 28, 0.45);
-      background-blend-mode: luminosity;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: none;
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      position: relative;
-      overflow: hidden;
+    /* Премиальная карточка со стеклом и тонким свечением */
+    .clean-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    .liquid-glass::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      padding: 1.2px;
-      background: linear-gradient(180deg, rgba(255, 72, 32, 0.5) 0%, rgba(255, 255, 255, 0.15) 25%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.1) 80%, rgba(255, 72, 32, 0.3) 100%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      pointer-events: none;
-    }
-
-    /* Blur-fade-up анимация */
-    @keyframes blurFadeUp {
-      from {
-        opacity: 0;
-        filter: blur(20px);
-        transform: translateY(35px);
-      }
-      to {
-        opacity: 1;
-        filter: blur(0);
-        transform: translateY(0);
-      }
-    }
-
-    .animate-blur-fade-up {
-      opacity: 0;
-      animation: blurFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .clean-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 72, 32, 0.3);
+      box-shadow: 0 20px 35px -10px rgba(255, 72, 32, 0.08);
     }
   </style>
 </head>
-<body class="relative flex flex-col justify-between selection:bg-[#FF4820] selection:text-black">
+<body class="selection:bg-[#FF4820] selection:text-white relative overflow-x-hidden">
 
-  <!-- 1. ФОНОВОЕ 4K ВИДЕО -->
-  <video
-    autoplay
-    loop
-    muted
-    playsinline
-    class="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
-  >
-    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_094145_4a271a6c-3869-4f1c-8aa7-aeb0cb227994.mp4" type="video/mp4">
-  </video>
+  <!-- Фоновая сетка -->
+  <div class="fixed inset-0 pointer-events-none swiss-grid z-0 opacity-70"></div>
 
-  <!-- 2. ОПТИЧЕСКИЙ БЛЮР-ОВЕРЛЕЙ (БЕЗ ТЕМНОГО ГРАДИЕНТА) -->
-  <div class="bottom-blur-overlay"></div>
-
-  <!-- 3. NAVBAR -->
-  <header class="relative z-50 flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 md:py-6 w-full">
-    
-    <!-- Бренд-лок ап -->
-    <a href="#" class="flex flex-col group animate-blur-fade-up" style="animation-delay: 0ms;">
-      <div class="flex items-center gap-2">
-        <span class="w-2.5 h-2.5 bg-[#FF4820] rounded-sm group-hover:rotate-45 transition-transform duration-300"></span>
-        <span class="text-base md:text-lg font-black tracking-wider text-white">THE.ALI.AGENCY</span>
-      </div>
-      <span class="text-[9px] md:text-[10px] tracking-[0.22em] text-[#9CA3AF] uppercase font-mono pl-4">
-        FULL-CYCLE MARKETING & PRODUCTION
-      </span>
-    </a>
-
-    <!-- Центральная навигация (Desktop Only) -->
-    <nav class="hidden lg:flex items-center gap-8">
-      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 100ms;">Acquisition</a>
-      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 150ms;">Production 4K</a>
-      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 200ms;">Infographics 5000px</a>
-      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 250ms;">TAP Ecosystem</a>
-      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 300ms;">Manifesto</a>
-    </nav>
-
-    <!-- Правые кнопки -->
-    <div class="flex items-center gap-3">
-      <!-- Статус доступности -->
-      <div class="hidden sm:inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full liquid-glass text-xs text-[#9CA3AF] animate-blur-fade-up" style="animation-delay: 350ms;">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+  <!-- Header -->
+  <header class="relative z-50 border-b border-black/[0.06] bg-[#F5F5F7]/85 backdrop-blur-xl sticky top-0">
+    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand -->
+      <a href="#" class="flex flex-col group">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 bg-[#FF4820] rounded-sm group-hover:rotate-45 transition-transform duration-300"></span>
+          <span class="font-unbounded font-black tracking-tight text-base sm:text-lg text-[#0F1117]">THE.ALI.AGENCY</span>
+        </div>
+        <span class="text-[9px] font-mono tracking-[0.22em] text-[#64748B] uppercase pl-4 font-bold">
+          Full-Cycle Production // Media
         </span>
-        <span class="font-mono text-[11px] text-gray-200">OPEN FOR Q1–Q2</span>
-      </div>
-
-      <!-- Кнопка Telegram -->
-      <a
-        href="https://t.me/asan_ali"
-        target="_blank"
-        rel="noreferrer"
-        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#FF4820]/30 animate-blur-fade-up cursor-pointer"
-        style="animation-delay: 400ms;"
-      >
-        Написать <i data-lucide="send" class="w-3.5 h-3.5"></i>
       </a>
 
-      <!-- Мобильный гамбургер -->
-      <button
-        id="menu-btn"
-        class="lg:hidden w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white animate-blur-fade-up cursor-pointer"
-        style="animation-delay: 350ms;"
-        aria-label="Toggle menu"
-      >
-        <i id="menu-icon" data-lucide="menu" class="w-5 h-5 transition-transform duration-300"></i>
-      </button>
+      <!-- Status & Fast Actions -->
+      <div class="flex items-center gap-4">
+        <div class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-black/[0.06] text-xs font-mono text-[#64748B] shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+          Open for Projects
+        </div>
+
+        <a
+          href="https://t.me/asan_ali"
+          target="_blank"
+          class="px-5 py-2.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white text-xs font-unbounded font-bold tracking-wider uppercase transition-all shadow-md shadow-[#FF4820]/25 flex items-center gap-2"
+        >
+          Telegram <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
     </div>
   </header>
 
-  <!-- МОБИЛЬНОЕ ДРОПДАУН МЕНЮ -->
-  <div
-    id="mobile-menu"
-    class="lg:hidden fixed top-[72px] left-0 w-full z-40 bg-[#0A0B0E]/95 backdrop-blur-xl border-t border-b border-white/10 p-6 flex flex-col gap-4 -translate-y-4 opacity-0 pointer-events-none transition-all duration-300 ease-out shadow-2xl"
-  >
-    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Acquisition</a>
-    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Production 4K</a>
-    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Infographics 5000px</a>
-    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">TAP Ecosystem</a>
-    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Manifesto</a>
+  <main class="relative z-10">
 
-    <div class="flex flex-col gap-3 pt-2">
-      <a href="https://t.me/asan_ali" target="_blank" class="w-full py-3 rounded-xl bg-[#FF4820] text-center font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2">
-        <i data-lucide="send" class="w-4 h-4"></i> Telegram
-      </a>
-      <a href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY" target="_blank" class="w-full py-3 rounded-xl liquid-glass text-center font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2">
-        <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> WhatsApp
-      </a>
-    </div>
-  </div>
-
-  <!-- 4. HERO CONTENT (BOTTOM ANCHORED) -->
-  <main class="relative z-10 flex-1 flex flex-col justify-end px-4 sm:px-6 md:px-12 pb-8 md:pb-14 w-full">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 w-full">
+    <!-- 1. HERO СЕКЦИЯ -->
+    <section class="max-w-6xl mx-auto px-6 pt-20 pb-16 sm:pb-24">
       
-      <!-- Левая часть: Оффер и CTA -->
-      <div class="flex-1 max-w-3xl">
-        
-        <!-- Акроним A.L.I. Бейдж -->
-        <div
-          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full liquid-glass text-xs font-mono text-[#FF4820] font-bold mb-4 md:mb-6 animate-blur-fade-up"
-          style="animation-delay: 300ms;"
-        >
-          <span class="w-2 h-2 rounded-full bg-[#FF4820] animate-pulse"></span>
-          [A.L.I.] ACQUISITION // LEADS // IMPACT
-        </div>
-
-        <!-- H1 Заголовок -->
-        <h1
-          class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.06] mb-4 md:mb-6 animate-blur-fade-up"
-          style="animation-delay: 400ms;"
-        >
-          Пока другие тестируют наугад — <br class="hidden sm:inline" />
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-[#FF4820]">
-            мы строим окупаемые связки, которые приносят кассу.
-          </span>
-        </h1>
-
-        <!-- Подзаголовок -->
-        <p
-          class="text-sm sm:text-base md:text-lg text-[#9CA3AF] max-w-2xl leading-relaxed mb-6 md:mb-8 font-normal animate-blur-fade-up"
-          style="animation-delay: 500ms;"
-        >
-          Объединяем сильный визуальный продакшн на кинокамеры, векторную инфографику 5000 px и жесткий перформанс-таргет с ежедневным сквозным учетом окупаемости в РНП.
-        </p>
-
-        <!-- CTA кнопки в мессенджеры -->
-        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
-          <a
-            href="https://t.me/asan_ali"
-            target="_blank"
-            rel="noreferrer"
-            class="px-7 sm:px-9 py-3 sm:py-3.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all shadow-xl shadow-[#FF4820]/30 hover:scale-105 animate-blur-fade-up cursor-pointer"
-            style="animation-delay: 600ms;"
-          >
-            <i data-lucide="send" class="w-4 h-4"></i> Обсудить в Telegram
-          </a>
-
-          <a
-            href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
-            target="_blank"
-            rel="noreferrer"
-            class="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full liquid-glass text-white hover:bg-white/10 font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all animate-blur-fade-up cursor-pointer"
-            style="animation-delay: 700ms;"
-          >
-            <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> WhatsApp Диалог
-          </a>
-        </div>
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-xs font-mono text-[#64748B] mb-8 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-[#FF4820]"></span>
+        ACQUISITION // LEADS // IMPACT
       </div>
 
-      <!-- Правая часть: KPI метрики и экосистема TAP -->
-      <div class="flex flex-col items-start md:items-end gap-3 shrink-0">
-        
-        <!-- KPI капсулы -->
-        <div
-          class="flex flex-wrap md:flex-col gap-2 font-mono text-xs animate-blur-fade-up"
-          style="animation-delay: 800ms;"
+      <!-- Главный оффер -->
+      <h1 class="font-unbounded font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.05] text-[#0F1117] max-w-4xl mb-6">
+        Качаем трафик. <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4820] to-[#ff7a5c]">
+          Считаем прибыль.
+        </span>
+      </h1>
+
+      <p class="text-base sm:text-xl text-[#64748B] max-w-2xl leading-relaxed mb-10 font-normal">
+        Создаем кино-продакшн, векторный дизайн и ведем таргет с ежедневным учетом окупаемости в кассе бизнеса.
+      </p>
+
+      <!-- CTA кнопки -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-md mb-16">
+        <a
+          href="https://t.me/asan_ali"
+          target="_blank"
+          class="px-8 py-4 rounded-2xl bg-[#FF4820] hover:bg-[#ff5d38] text-white font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF4820]/30 hover:scale-[1.02]"
         >
-          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
-            <span class="text-[#FF4820] font-bold">[ 5000 px ]</span> Vector High-Res Graphic
+          <i data-lucide="send" class="w-4 h-4"></i> В Telegram
+        </a>
+        <a
+          href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
+          target="_blank"
+          class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-[#0F1117] border border-black/[0.1] font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm"
+        >
+          <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> В WhatsApp
+        </a>
+      </div>
+
+      <!-- Метрики Made on Tilda -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-black/[0.08]">
+        <div class="p-6 rounded-2xl clean-card">
+          <span class="font-unbounded text-3xl sm:text-4xl font-black text-[#0F1117] block mb-1">5000 px</span>
+          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">Векторный дизайн</span>
+        </div>
+        <div class="p-6 rounded-2xl clean-card">
+          <span class="font-unbounded text-3xl sm:text-4xl font-black text-[#FF4820] block mb-1">4K RAW</span>
+          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">Свет и кинокамеры</span>
+        </div>
+        <div class="p-6 rounded-2xl clean-card">
+          <span class="font-unbounded text-3xl sm:text-4xl font-black text-[#10B981] block mb-1">100%</span>
+          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">Оцифровка в РНП</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. СИСТЕМА A.L.I. -->
+    <section class="max-w-6xl mx-auto px-6 py-16">
+      <div class="mb-10">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#FF4820] font-bold">Архитектура связок</span>
+        <h2 class="font-unbounded font-black text-2xl sm:text-4xl text-[#0F1117] mt-1">Методология A.L.I.</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
+          <div>
+            <div class="font-unbounded text-4xl font-black text-black/10 mb-4">[ A ]</div>
+            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Acquisition</h3>
+            <p class="text-sm text-[#64748B] leading-relaxed">
+              Системный трафик Meta & TikTok Ads. Без слива бюджета на тесты вслепую.
+            </p>
           </div>
-          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
-            <span class="text-[#FF4820] font-bold">[ 4K RAW ]</span> Cinema Cameras & Light
-          </div>
-          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
-            <span class="text-[#10B981] font-bold">[ 100% ]</span> Strict ROMI Accountability
+          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Оптимизация за конверсии
           </div>
         </div>
 
-        <!-- TAP Экосистема -->
-        <div
-          class="px-4 py-2 rounded-full liquid-glass text-[10px] tracking-widest text-[#9CA3AF] font-mono flex items-center gap-2 animate-blur-fade-up"
-          style="animation-delay: 900ms;"
-        >
-          <span class="w-1.5 h-1.5 rounded-full bg-[#FF4820]"></span>
-          POWERED BY TAP // ADTECH INFRASTRUCTURE
+        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
+          <div>
+            <div class="font-unbounded text-4xl font-black text-black/10 mb-4">[ L ]</div>
+            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Leads</h3>
+            <p class="text-sm text-[#64748B] leading-relaxed">
+              Посадочные страницы и связки в мессенджерах с высокой конверсией в оплату.
+            </p>
+          </div>
+          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Воронки WhatsApp & Web
+          </div>
+        </div>
+
+        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
+          <div>
+            <div class="font-unbounded text-4xl font-black text-black/10 mb-4">[ I ]</div>
+            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Impact</h3>
+            <p class="text-sm text-[#64748B] leading-relaxed">
+              Влияние на чистую прибыль. Отчеты по РНП каждый день, а не просто клики.
+            </p>
+          </div>
+          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Ежедневный контроль ROMI
+          </div>
         </div>
 
       </div>
+    </section>
 
-    </div>
+    <!-- 3. КОНТРАСТ: НЕ КРЕАТИВ РАДИ КРЕАТИВА -->
+    <section class="max-w-6xl mx-auto px-6 py-12">
+      <div class="rounded-3xl bg-white border border-black/[0.08] p-8 sm:p-14 shadow-sm">
+        <span class="text-xs font-mono uppercase tracking-widest text-[#FF4820] font-bold">Контраст подхода</span>
+        <h2 class="font-unbounded font-black text-2xl sm:text-4xl text-[#0F1117] mt-2 mb-10">
+          Не делаем «креатив ради креатива».
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="p-6 rounded-2xl bg-[#F5F5F7] border border-black/[0.04]">
+            <span class="text-xs font-mono uppercase text-[#64748B] font-bold block mb-2">Как у других:</span>
+            <p class="text-sm text-[#64748B] leading-relaxed">
+              Отчитываются кликами, показами и красивыми картинками. В итоге красивый контент есть, а касса бизнеса не растет.
+            </p>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-black text-white">
+            <span class="text-xs font-mono uppercase text-[#FF4820] font-bold block mb-2">Как строим мы:</span>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              Отдаем готовые связки под ключ: <b>сценарий → съемка на кинокамеру → графика 5000 px → таргет → оцифрованная касса</b>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. СОБСТВЕННЫЙ СОФТ: TAP -->
+    <section class="max-w-6xl mx-auto px-6 py-8">
+      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-white via-white to-orange-50 border border-black/[0.08] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-2xl bg-[#FF4820] flex items-center justify-center text-white font-unbounded font-black text-lg shrink-0">
+            TAP
+          </div>
+          <div>
+            <h4 class="font-unbounded font-bold text-base text-[#0F1117]">Traffic Automation Platform</h4>
+            <p class="text-xs text-[#64748B] mt-0.5">Разработчики собственной платформы автозапуска рекламы для селлеров маркетплейсов</p>
+          </div>
+        </div>
+        <div class="text-xs font-mono text-[#64748B] bg-white border border-black/[0.08] px-4 py-2 rounded-xl whitespace-nowrap shadow-sm font-semibold">
+          Powered by THE.ALI.AGENCY
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. ФИНАЛЬНЫЙ ЭКРАН CTA (БЕЗ ФОРМ) -->
+    <section class="max-w-3xl mx-auto px-6 py-20 text-center">
+      <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0F1117] mb-4">
+        Обсудить проект.
+      </h2>
+      <p class="text-sm sm:text-base text-[#64748B] mb-10 max-w-md mx-auto leading-relaxed">
+        Напишите напрямую в мессенджер без заполнения скучных брифов и анкет. Ответим в течение часа.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="https://t.me/asan_ali"
+          target="_blank"
+          class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-[#FF4820] hover:bg-[#ff5d38] text-white font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF4820]/30 hover:scale-105"
+        >
+          <i data-lucide="send" class="w-4 h-4"></i> Написать в Telegram
+        </a>
+        <a
+          href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
+          target="_blank"
+          class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white hover:bg-slate-50 text-[#0F1117] border border-black/[0.1] font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm"
+        >
+          <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> Написать в WhatsApp
+        </a>
+      </div>
+    </section>
+
   </main>
 
+  <!-- Footer -->
+  <footer class="border-t border-black/[0.06] py-10 text-center text-xs text-[#64748B] font-mono">
+    © THE.ALI.AGENCY. ALL RIGHTS RESERVED. ALMATY, KAZAKHSTAN.
+  </footer>
+
   <script>
-    // Инициализация Lucide иконок
     lucide.createIcons();
-
-    // Логика мобильного меню
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = document.getElementById('menu-icon');
-    let isOpen = false;
-
-    if (menuBtn && mobileMenu) {
-      menuBtn.addEventListener('click', () => {
-        isOpen = !isOpen;
-        if (isOpen) {
-          mobileMenu.classList.remove('-translate-y-4', 'opacity-0', 'pointer-events-none');
-          mobileMenu.classList.add('translate-y-0', 'opacity-100');
-          menuIcon.setAttribute('data-lucide', 'x');
-        } else {
-          mobileMenu.classList.add('-translate-y-4', 'opacity-0', 'pointer-events-none');
-          mobileMenu.classList.remove('translate-y-0', 'opacity-100');
-          menuIcon.setAttribute('data-lucide', 'menu');
-        }
-        lucide.createIcons();
-      });
-    }
   </script>
 </body>
 </html>
