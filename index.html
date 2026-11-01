@@ -4,821 +4,323 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>THE.ALI.AGENCY — Full-Cycle Marketing & Production</title>
-  
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-  
-  <style>
-    :root {
-      --bg: #0A0B0E;
-      --card-bg: rgba(18, 20, 28, 0.75);
-      --ink: #FFFFFF;
-      --mute: #9CA3AF;
-      --sub: #6B7280;
-      --coral: #FF4820;
-      --emerald: #10B981;
-    }
 
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              bg: '#0A0B0E',
+              coral: '#FF4820',
+              emerald: '#10B981',
+              zinc: '#9CA3AF',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
-      background-color: var(--bg);
-      color: var(--ink);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    body {
+      background-color: #0A0B0E;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
     }
 
-    /* Фоновый холст с LED-матрицей */
-    canvas#dots {
+    /* Нижний оптический блюр с маской без искусственного темного градиента */
+    .bottom-blur-overlay {
+      position: fixed;
+      inset: 0;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      mask-image: linear-gradient(to top, black 0%, transparent 45%);
+      -webkit-mask-image: linear-gradient(to top, black 0%, transparent 45%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Эффект Liquid Glass с неоновым контуром */
+    .liquid-glass {
+      background: rgba(18, 20, 28, 0.45);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.12), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass::before {
+      content: "";
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      z-index: 1;
+      border-radius: inherit;
+      padding: 1.2px;
+      background: linear-gradient(180deg, rgba(255, 72, 32, 0.5) 0%, rgba(255, 255, 255, 0.15) 25%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.1) 80%, rgba(255, 72, 32, 0.3) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
       pointer-events: none;
     }
 
-    /* Hero контейнер */
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      overflow: hidden;
-      background-color: var(--bg);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    /* Навигация */
-    nav {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 28px clamp(20px, 4vw, 60px) 0;
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-      color: #fff;
-    }
-
-    .brand-title {
-      font-size: 18px;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-badge {
-      width: 8px;
-      height: 8px;
-      background: var(--coral);
-      border-radius: 2px;
-      display: inline-block;
-    }
-
-    .brand-sub {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.22em;
-      color: var(--mute);
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    .nav-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--mute);
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 8px var(--emerald);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
-    }
-
-    /* Центральный смысловой блок */
-    .copy {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 40px 24px;
-    }
-
-    .badge-ali {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 999px;
-      background: rgba(255, 72, 32, 0.08);
-      border: 1px solid rgba(255, 72, 32, 0.3);
-      color: var(--coral);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      margin-bottom: 24px;
-    }
-
-    .copy h1 {
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      font-size: clamp(34px, 4.5vw, 62px);
-      margin-bottom: 24px;
-    }
-
-    .copy h1 .line-lead {
-      color: var(--mute);
-      display: block;
-      font-weight: 500;
-      font-size: 0.85em;
-      margin-bottom: 8px;
-    }
-
-    .copy h1 .line-highlight {
-      color: #fff;
-      background: linear-gradient(180deg, #FFFFFF 0%, #D1D5DB 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .copy p.subline {
-      margin: 0 auto;
-      max-width: 580px;
-      color: var(--mute);
-      font-size: clamp(14px, 1.1vw, 16.5px);
-      line-height: 1.6;
-    }
-
-    /* Кнопки действий */
-    .cta-group {
-      margin-top: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .cta-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .cta-glow {
-      position: absolute;
-      left: 8%;
-      right: 8%;
-      bottom: -6px;
-      height: 18px;
-      border-radius: 50%;
-      background: linear-gradient(90deg, #FF4820, #FF833E, #FF2E00);
-      filter: blur(12px);
-      opacity: 0.75;
-      transition: all 0.3s ease;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .btn-primary {
-      position: relative;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--coral);
-      color: #FFFFFF;
-      font-size: 13.5px;
-      font-weight: 600;
-      text-decoration: none;
-      padding: 13px 28px;
-      border-radius: 999px;
-      transition: transform 0.25s ease, background 0.25s ease;
-    }
-
-    .cta-wrapper:hover .btn-primary {
-      transform: translateY(-2px);
-      background: #ff5934;
-    }
-
-    .cta-wrapper:hover .cta-glow {
-      opacity: 1;
-      filter: blur(16px);
-      bottom: -8px;
-    }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-size: 13.5px;
-      font-weight: 500;
-      text-decoration: none;
-      padding: 13px 26px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
-      transition: all 0.25s ease;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-
-    /* Нижняя строка метрик */
-    .hero-footer {
-      position: relative;
-      z-index: 10;
-      padding: 24px clamp(20px, 4vw, 60px) 36px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    .tagline-ticker {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--sub);
-      text-transform: uppercase;
-    }
-
-    .metrics-row {
-      display: flex;
-      gap: 24px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--mute);
-    }
-
-    .metrics-row span b {
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Контентные секции */
-    section.section-block {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 90px 24px;
-      position: relative;
-      z-index: 5;
-    }
-
-    .section-head {
-      margin-bottom: 48px;
-    }
-
-    .section-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--coral);
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .section-title {
-      font-size: clamp(26px, 3vw, 40px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    /* Карточки A.L.I. */
-    .ali-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 20px;
-    }
-
-    .ali-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      padding: 36px 30px;
-      backdrop-filter: blur(12px);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .ali-card:hover {
-      border-color: rgba(255, 72, 32, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px -10px rgba(255, 72, 32, 0.12);
-    }
-
-    .ali-letter {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 32px;
-      font-weight: 900;
-      color: var(--coral);
-      margin-bottom: 16px;
-    }
-
-    .ali-card h3 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .ali-card p {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--mute);
-    }
-
-    /* Манифест */
-    .manifesto-box {
-      background: linear-gradient(135deg, rgba(255, 72, 32, 0.05) 0%, rgba(18, 20, 28, 0.8) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: clamp(32px, 5vw, 60px);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-
-    @media (max-width: 820px) {
-      .manifesto-box {
-        grid-template-columns: 1fr;
+    /* Blur-fade-up анимация */
+    @keyframes blurFadeUp {
+      from {
+        opacity: 0;
+        filter: blur(20px);
+        transform: translateY(35px);
+      }
+      to {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
       }
     }
 
-    .manifesto-text p {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--mute);
-      margin-top: 16px;
-    }
-
-    .spec-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .spec-item {
-      padding: 16px 20px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .spec-item h4 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .spec-item p {
-      font-size: 12.5px;
-      color: var(--mute);
-      line-height: 1.4;
-    }
-
-    /* Футер */
-    footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 40px 24px;
-      text-align: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--sub);
-      position: relative;
-      z-index: 5;
-    }
-
-    @media (max-width: 760px) {
-      nav {
-        padding-top: 20px;
-      }
-      .nav-status {
-        display: none;
-      }
-      .hero-footer {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    .animate-blur-fade-up {
+      opacity: 0;
+      animation: blurFadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
   </style>
 </head>
-<body>
+<body class="relative flex flex-col justify-between selection:bg-[#FF4820] selection:text-black">
 
-  <!-- HERO SECTION С CANVAS ЭФФЕКТОМ DOT-MATRIX -->
-  <section class="hero">
-    <canvas id="dots"></canvas>
+  <!-- 1. ФОНОВОЕ 4K ВИДЕО -->
+  <video
+    autoplay
+    loop
+    muted
+    playsinline
+    class="fixed inset-0 w-full h-full object-cover z-0 pointer-events-none"
+  >
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260406_094145_4a271a6c-3869-4f1c-8aa7-aeb0cb227994.mp4" type="video/mp4">
+  </video>
 
-    <nav>
-      <a href="#" class="brand">
-        <span class="brand-title"><span class="brand-badge"></span> THE.ALI.AGENCY</span>
-        <span class="brand-sub">Acquisition // Leads // Impact</span>
-      </a>
+  <!-- 2. ОПТИЧЕСКИЙ БЛЮР-ОВЕРЛЕЙ (БЕЗ ТЕМНОГО ГРАДИЕНТА) -->
+  <div class="bottom-blur-overlay"></div>
 
-      <div class="nav-status">
-        <span class="status-dot"></span>
-        <span>Open for Q1–Q2 Projects</span>
+  <!-- 3. NAVBAR -->
+  <header class="relative z-50 flex items-center justify-between px-4 sm:px-6 md:px-12 py-4 md:py-6 w-full">
+    
+    <!-- Бренд-лок ап -->
+    <a href="#" class="flex flex-col group animate-blur-fade-up" style="animation-delay: 0ms;">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#FF4820] rounded-sm group-hover:rotate-45 transition-transform duration-300"></span>
+        <span class="text-base md:text-lg font-black tracking-wider text-white">THE.ALI.AGENCY</span>
       </div>
+      <span class="text-[9px] md:text-[10px] tracking-[0.22em] text-[#9CA3AF] uppercase font-mono pl-4">
+        FULL-CYCLE MARKETING & PRODUCTION
+      </span>
+    </a>
+
+    <!-- Центральная навигация (Desktop Only) -->
+    <nav class="hidden lg:flex items-center gap-8">
+      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 100ms;">Acquisition</a>
+      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 150ms;">Production 4K</a>
+      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 200ms;">Infographics 5000px</a>
+      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 250ms;">TAP Ecosystem</a>
+      <a href="#" class="text-xs font-mono tracking-widest uppercase text-gray-300 hover:text-white transition-colors animate-blur-fade-up" style="animation-delay: 300ms;">Manifesto</a>
     </nav>
 
-    <div class="copy">
-      <div class="badge-ali">FULL-CYCLE MARKETING & PRODUCTION</div>
+    <!-- Правые кнопки -->
+    <div class="flex items-center gap-3">
+      <!-- Статус доступности -->
+      <div class="hidden sm:inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full liquid-glass text-xs text-[#9CA3AF] animate-blur-fade-up" style="animation-delay: 350ms;">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+        </span>
+        <span class="font-mono text-[11px] text-gray-200">OPEN FOR Q1–Q2</span>
+      </div>
+
+      <!-- Кнопка Telegram -->
+      <a
+        href="https://t.me/asan_ali"
+        target="_blank"
+        rel="noreferrer"
+        class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-[#FF4820]/30 animate-blur-fade-up cursor-pointer"
+        style="animation-delay: 400ms;"
+      >
+        Написать <i data-lucide="send" class="w-3.5 h-3.5"></i>
+      </a>
+
+      <!-- Мобильный гамбургер -->
+      <button
+        id="menu-btn"
+        class="lg:hidden w-10 h-10 rounded-full liquid-glass flex items-center justify-center text-white animate-blur-fade-up cursor-pointer"
+        style="animation-delay: 350ms;"
+        aria-label="Toggle menu"
+      >
+        <i id="menu-icon" data-lucide="menu" class="w-5 h-5 transition-transform duration-300"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- МОБИЛЬНОЕ ДРОПДАУН МЕНЮ -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden fixed top-[72px] left-0 w-full z-40 bg-[#0A0B0E]/95 backdrop-blur-xl border-t border-b border-white/10 p-6 flex flex-col gap-4 -translate-y-4 opacity-0 pointer-events-none transition-all duration-300 ease-out shadow-2xl"
+  >
+    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Acquisition</a>
+    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Production 4K</a>
+    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Infographics 5000px</a>
+    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">TAP Ecosystem</a>
+    <a href="#" class="text-sm font-mono tracking-wider uppercase text-gray-300 py-2 border-b border-white/5">Manifesto</a>
+
+    <div class="flex flex-col gap-3 pt-2">
+      <a href="https://t.me/asan_ali" target="_blank" class="w-full py-3 rounded-xl bg-[#FF4820] text-center font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2">
+        <i data-lucide="send" class="w-4 h-4"></i> Telegram
+      </a>
+      <a href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY" target="_blank" class="w-full py-3 rounded-xl liquid-glass text-center font-bold text-xs uppercase tracking-wider text-white flex items-center justify-center gap-2">
+        <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> WhatsApp
+      </a>
+    </div>
+  </div>
+
+  <!-- 4. HERO CONTENT (BOTTOM ANCHORED) -->
+  <main class="relative z-10 flex-1 flex flex-col justify-end px-4 sm:px-6 md:px-12 pb-8 md:pb-14 w-full">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 w-full">
       
-      <h1>
-        <span class="line-lead">Пока другие тестируют наугад —</span>
-        <span class="line-highlight">мы строим окупаемые связки, которые приносят кассу.</span>
-      </h1>
+      <!-- Левая часть: Оффер и CTA -->
+      <div class="flex-1 max-w-3xl">
+        
+        <!-- Акроним A.L.I. Бейдж -->
+        <div
+          class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full liquid-glass text-xs font-mono text-[#FF4820] font-bold mb-4 md:mb-6 animate-blur-fade-up"
+          style="animation-delay: 300ms;"
+        >
+          <span class="w-2 h-2 rounded-full bg-[#FF4820] animate-pulse"></span>
+          [A.L.I.] ACQUISITION // LEADS // IMPACT
+        </div>
 
-      <p class="subline">
-        Объединяем сильный визуальный продакшн на кинокамеры, векторную графику 5000 px и перформанс-таргет с ежедневным контролем окупаемости в РНП.
-      </p>
+        <!-- H1 Заголовок -->
+        <h1
+          class="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.06] mb-4 md:mb-6 animate-blur-fade-up"
+          style="animation-delay: 400ms;"
+        >
+          Пока другие тестируют наугад — <br class="hidden sm:inline" />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-[#FF4820]">
+            мы строим окупаемые связки, которые приносят кассу.
+          </span>
+        </h1>
 
-      <div class="cta-group">
-        <div class="cta-wrapper">
-          <div class="cta-glow"></div>
-          <!-- Замените @asan_ali на ваш реальный Telegram -->
-          <a href="https://t.me/asan_ali" target="_blank" class="btn-primary">
-            Обсудить в Telegram →
+        <!-- Подзаголовок -->
+        <p
+          class="text-sm sm:text-base md:text-lg text-[#9CA3AF] max-w-2xl leading-relaxed mb-6 md:mb-8 font-normal animate-blur-fade-up"
+          style="animation-delay: 500ms;"
+        >
+          Объединяем сильный визуальный продакшн на кинокамеры, векторную инфографику 5000 px и жесткий перформанс-таргет с ежедневным сквозным учетом окупаемости в РНП.
+        </p>
+
+        <!-- CTA кнопки в мессенджеры -->
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4">
+          <a
+            href="https://t.me/asan_ali"
+            target="_blank"
+            rel="noreferrer"
+            class="px-7 sm:px-9 py-3 sm:py-3.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all shadow-xl shadow-[#FF4820]/30 hover:scale-105 animate-blur-fade-up cursor-pointer"
+            style="animation-delay: 600ms;"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i> Обсудить в Telegram
+          </a>
+
+          <a
+            href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
+            target="_blank"
+            rel="noreferrer"
+            class="px-6 sm:px-8 py-3 sm:py-3.5 rounded-full liquid-glass text-white hover:bg-white/10 font-bold text-xs sm:text-sm uppercase tracking-wider flex items-center gap-2.5 transition-all animate-blur-fade-up cursor-pointer"
+            style="animation-delay: 700ms;"
+          >
+            <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> WhatsApp Диалог
           </a>
         </div>
-        <!-- Замените номер 77000000000 на ваш реальный WhatsApp -->
-        <a href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY" target="_blank" class="btn-secondary">
-          Написать в WhatsApp
-        </a>
-      </div>
-    </div>
-
-    <div class="hero-footer">
-      <div class="tagline-ticker">
-        ENGINEERED GROWTH // METRICS OVER NOISE
-      </div>
-      <div class="metrics-row">
-        <span><b>5000 px</b> Вектор</span>
-        <span><b>4K RAW</b> Киносвет</span>
-        <span><b>Meta & TikTok</b> Ads</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- СЕКЦИЯ МЕТОДОЛОГИИ A.L.I. -->
-  <section class="section-block">
-    <div class="section-head">
-      <span class="section-tag">Система окупаемости</span>
-      <h2 class="section-title">Методология A.L.I.</h2>
-    </div>
-
-    <div class="ali-grid">
-      <div class="ali-card">
-        <div class="ali-letter">[ A ]</div>
-        <h3>Acquisition</h3>
-        <p>Привлечение системного трафика. Управляемые потоки целевой аудитории через Meta Ads и TikTok Ads без слива бюджета на широкую аудиторию.</p>
       </div>
 
-      <div class="ali-card">
-        <div class="ali-letter">[ L ]</div>
-        <h3>Leads</h3>
-        <p>Конверсия в квалифицированные заявки. Высокоскоростные посадочные страницы, мессенджер-воронки и кликабельные витрины под ключ.</p>
-      </div>
-
-      <div class="ali-card">
-        <div class="ali-letter">[ I ]</div>
-        <h3>Impact</h3>
-        <p>Прямое влияние на кассу и чистую прибыль. Оцифровка связок в ежедневных РНП-дашбордах вместо пустых отчетов по кликам и охватам.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- СЕКЦИЯ МАНИФЕСТА -->
-  <section class="section-block">
-    <div class="manifesto-box">
-      <div class="manifesto-text">
-        <span class="section-tag">Позиционирование</span>
-        <h2 class="section-title">Никакого «креатива ради креатива».</h2>
-        <p>
-          Большинство агентств отчитываются просмотрами и картинками. Мы соединяем премиальный продакшн с жесткой перформанс-аналитикой, чтобы визуал изначально продавал.
-        </p>
-      </div>
-
-      <div class="spec-list">
-        <div class="spec-item">
-          <h4>Продакшн полного цикла</h4>
-          <p>Сценарии с хуками первых 3 секунд, интерьерные локации, предметный киносвет, актеры и динамичный монтаж.</p>
+      <!-- Правая часть: KPI метрики и экосистема TAP -->
+      <div class="flex flex-col items-start md:items-end gap-3 shrink-0">
+        
+        <!-- KPI капсулы -->
+        <div
+          class="flex flex-wrap md:flex-col gap-2 font-mono text-xs animate-blur-fade-up"
+          style="animation-delay: 800ms;"
+        >
+          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
+            <span class="text-[#FF4820] font-bold">[ 5000 px ]</span> Vector High-Res Graphic
+          </div>
+          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
+            <span class="text-[#FF4820] font-bold">[ 4K RAW ]</span> Cinema Cameras & Light
+          </div>
+          <div class="px-4 py-2 rounded-xl liquid-glass text-gray-200 flex items-center gap-2">
+            <span class="text-[#10B981] font-bold">[ 100% ]</span> Strict ROMI Accountability
+          </div>
         </div>
-        <div class="spec-item">
-          <h4>Векторный дизайн 5000 px</h4>
-          <p>Инфографика карточек товаров и баннеры в сверхвысоком разрешении без пикселей при любом зуме.</p>
+
+        <!-- TAP Экосистема -->
+        <div
+          class="px-4 py-2 rounded-full liquid-glass text-[10px] tracking-widest text-[#9CA3AF] font-mono flex items-center gap-2 animate-blur-fade-up"
+          style="animation-delay: 900ms;"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-[#FF4820]"></span>
+          POWERED BY TAP // ADTECH INFRASTRUCTURE
         </div>
-        <div class="spec-item">
-          <h4>Сквозная оцифровка в РНП</h4>
-          <p>Ежедневный учет стоимости лида, конверсии посадки и вклада каждого рекламного креатива в общую выручку.</p>
-        </div>
+
       </div>
+
     </div>
-  </section>
+  </main>
 
-  <!-- ФУТЕР -->
-  <footer>
-    <p>© THE.ALI.AGENCY. ALL RIGHTS RESERVED. ALMATY, KAZAKHSTAN.</p>
-  </footer>
-
-  <!-- CANVAS DOT-MATRIX HANDS ENGINE (Vanillajs) -->
   <script>
-    (function () {
-      const canvas = document.getElementById('dots');
-      const ctx = canvas.getContext('2d');
+    // Инициализация Lucide иконок
+    lucide.createIcons();
 
-      const SHEET_URL = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261030_025250_100df7b8-31fd-4614-aa4a-c1b7d5b6b273.png&w=1600&q=85';
+    // Логика мобильного меню
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = document.getElementById('menu-icon');
+    let isOpen = false;
 
-      const RECTS = {
-        LA: [0, 0.06, 0.47, 0.40],
-        RA: [0.53, 0.06, 0.47, 0.40],
-        LB: [0, 0.55, 0.47, 0.40],
-        RB: [0.53, 0.55, 0.47, 0.40]
-      };
-
-      const TILES = {};
-      let tilesReady = false;
-
-      const fA = document.createElement('canvas');
-      const ctxA = fA.getContext('2d', { willReadFrequently: true });
-      const fB = document.createElement('canvas');
-      const ctxB = fB.getContext('2d', { willReadFrequently: true });
-
-      let W = 0, H = 0, DPR = 1;
-      let step = 7, rowStep = 14;
-      let cols = 0, rows = 0;
-      let R = 3;
-      let seeds = null;
-
-      function hash(a, b) {
-        const val = Math.sin(a * 127.1 + b * 311.7) * 43758.5453123;
-        return val - Math.floor(val);
-      }
-
-      function smooth(a, b, x) {
-        const t = Math.max(0, Math.min(1, (x - a) / (b - a)));
-        return t * t * (3 - 2 * t);
-      }
-
-      function mixAt(t, on, off, dur) {
-        return smooth(on, on + dur, t) * (1 - smooth(off, off + dur, t));
-      }
-
-      const sheet = new Image();
-      sheet.crossOrigin = 'anonymous';
-      sheet.onload = () => {
-        const nw = sheet.naturalWidth || 1600;
-        const nh = sheet.naturalHeight || 905;
-        const targetTileW = 420;
-
-        for (const key of ['LA', 'RA', 'LB', 'RB']) {
-          const [rx, ry, rw, rh] = RECTS[key];
-          const sx = rx * nw;
-          const sy = ry * nh;
-          const sw = rw * nw;
-          const sh = rh * nh;
-          const aspect = sh / sw;
-          const targetTileH = Math.round(targetTileW * aspect);
-
-          const tCanvas = document.createElement('canvas');
-          tCanvas.width = targetTileW;
-          tCanvas.height = targetTileH;
-          const tCtx = tCanvas.getContext('2d');
-          tCtx.imageSmoothingQuality = 'high';
-          tCtx.drawImage(sheet, sx, sy, sw, sh, 0, 0, targetTileW, targetTileH);
-          TILES[key] = tCanvas;
+    if (menuBtn && mobileMenu) {
+      menuBtn.addEventListener('click', () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+          mobileMenu.classList.remove('-translate-y-4', 'opacity-0', 'pointer-events-none');
+          mobileMenu.classList.add('translate-y-0', 'opacity-100');
+          menuIcon.setAttribute('data-lucide', 'x');
+        } else {
+          mobileMenu.classList.add('-translate-y-4', 'opacity-0', 'pointer-events-none');
+          mobileMenu.classList.remove('translate-y-0', 'opacity-100');
+          menuIcon.setAttribute('data-lucide', 'menu');
         }
-        tilesReady = true;
-      };
-      sheet.src = SHEET_URL;
-
-      function resize() {
-        const heroEl = document.querySelector('.hero');
-        W = heroEl ? heroEl.clientWidth : window.innerWidth;
-        H = heroEl ? heroEl.clientHeight : window.innerHeight;
-        DPR = Math.min(2, window.devicePixelRatio || 1);
-
-        canvas.width = W * DPR;
-        canvas.height = H * DPR;
-
-        step = Math.max(5, W / 210);
-        rowStep = step * 2.05;
-        cols = Math.ceil(W / step);
-        rows = Math.ceil(H / rowStep);
-        R = step * 0.46;
-
-        fA.width = cols;
-        fA.height = rows;
-        fB.width = cols;
-        fB.height = rows;
-
-        seeds = new Float32Array(cols * rows);
-        for (let j = 0; j < rows; j++) {
-          const rowNoise = hash(j * 3.1, 7.7);
-          for (let i = 0; i < cols; i++) {
-            seeds[j * cols + i] = 0.55 * hash(i, j) + 0.45 * rowNoise;
-          }
-        }
-      }
-
-      window.addEventListener('resize', resize);
-      resize();
-
-      const LOOP = 20;
-      const LEVELS = [0, 0.26, 0.52, 0.78, 1];
-
-      function render(timeSeconds) {
-        const t = ((timeSeconds % LOOP) + LOOP) % LOOP;
-        const a = (2 * Math.PI * t) / LOOP;
-
-        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-        ctx.clearRect(0, 0, W, H);
-
-        if (!tilesReady || cols === 0 || rows === 0) {
-          return;
-        }
-
-        ctxA.fillStyle = '#ffffff';
-        ctxA.fillRect(0, 0, cols, rows);
-        ctxB.fillStyle = '#ffffff';
-        ctxB.fillRect(0, 0, cols, rows);
-
-        const isPortrait = H > W;
-        const hw = isPortrait ? W * 0.66 : W * 0.52;
-        const hh = hw * ((0.40 * 1520) / (0.47 * 2688));
-        const cy = isPortrait ? H * 0.64 : H * 0.52;
-
-        for (let handIdx = 0; handIdx < 2; handIdx++) {
-          const isLeft = handIdx === 0;
-          const ph = isLeft ? 0 : Math.PI;
-
-          const reach = (0.035 * Math.sin(a + ph) + 0.012 * Math.sin(2 * a + 1.3 + ph)) * W;
-          const scale = 1 + 0.07 * Math.sin(a + 0.9 + ph);
-          const rot = (isLeft ? 1 : -1) * 0.045 * Math.sin(a + 2.1 + ph);
-
-          let x = isLeft ? (reach - W * 0.045) : (W - hw + W * 0.045 - reach);
-          const pivotX = isLeft ? 0 : W;
-          const pivotY = cy;
-
-          const applyHandTransform = (targetCtx) => {
-            targetCtx.save();
-            targetCtx.scale(cols / W, rows / H);
-            targetCtx.translate(pivotX, pivotY);
-            targetCtx.rotate(rot);
-            targetCtx.scale(scale, scale);
-            targetCtx.translate(-pivotX, -pivotY);
-          };
-
-          applyHandTransform(ctxA);
-          ctxA.drawImage(isLeft ? TILES.LA : TILES.RA, x, cy - hh / 2, hw, hh);
-          ctxA.restore();
-
-          applyHandTransform(ctxB);
-          ctxB.drawImage(isLeft ? TILES.LB : TILES.RB, x, cy - hh / 2, hw, hh);
-          ctxB.restore();
-        }
-
-        const imgDataA = ctxA.getImageData(0, 0, cols, rows).data;
-        const imgDataB = ctxB.getImageData(0, 0, cols, rows).data;
-
-        const mL = mixAt(t, 6.2, 14.6, 1.6);
-        const mR = mixAt(t, 2.4, 10.4, 1.6);
-
-        const tick = Math.floor(t * 7);
-
-        const rowShifts = new Int32Array(rows);
-        for (let j = 0; j < rows; j++) {
-          if (hash(j, tick) > 0.965) {
-            rowShifts[j] = Math.round((hash(tick, j) - 0.5) * 8);
-          } else {
-            rowShifts[j] = 0;
-          }
-        }
-
-        // Цвет светодиодов — чистый белый со свечением в темной теме
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-
-        const quietWidth = isPortrait ? 0.44 : 0.22;
-        const quietCenterY = isPortrait ? 0.33 : 0.385;
-
-        for (let j = 0; j < rows; j++) {
-          const shift = rowShifts[j];
-          const rowY = (j + 0.5) * rowStep;
-          const ey = (rowY / H - quietCenterY) / 0.085;
-
-          for (let i = 0; i < cols; i++) {
-            const seed = seeds[j * cols + i];
-            const isLeftHalf = i < cols / 2;
-            const m = isLeftHalf ? mL : mR;
-            const useB = seed < m;
-
-            let sampleI = i - shift;
-            if (sampleI < 0) sampleI = 0;
-            if (sampleI >= cols) sampleI = cols - 1;
-
-            const pixelIdx = (j * cols + sampleI) * 4;
-            const lum = (useB ? imgDataB[pixelIdx] : imgDataA[pixelIdx]) / 255;
-
-            let v = (1 - lum - 0.16) / 0.42;
-            if (v < 0) v = 0;
-            else if (v > 1) v = 1;
-
-            if (v <= 0.001) continue;
-
-            if (m > 0.001 && m < 0.999) {
-              const diff = Math.abs(seed - m);
-              if (diff < 0.12) {
-                v *= (diff / 0.12);
-                if (hash(i + tick, j) <= 0.4) {
-                  v *= 0.3;
-                }
-              }
-            }
-
-            v *= 0.86 + 0.14 * Math.sin(t * 3.2 + seed * 40);
-
-            const cx = Math.abs((i + 0.5) / cols - 0.5);
-            v *= smooth(0.035, 0.11, cx);
-
-            const ex = cx / quietWidth;
-            v *= smooth(0.85, 1.25, Math.hypot(ex, ey));
-
-            if (v <= 0.001) continue;
-
-            let level = 0;
-            for (let k = LEVELS.length - 1; k >= 0; k--) {
-              if (v >= LEVELS[k] - 0.13) {
-                level = LEVELS[k];
-                break;
-              }
-            }
-
-            if (level === 0) continue;
-
-            let radius = R * level;
-            if (level === LEVELS[1]) {
-              radius = R * 0.38;
-            }
-
-            const posX = (i + 0.5) * step;
-            ctx.moveTo(posX + radius, rowY);
-            ctx.arc(posX, rowY, radius, 0, Math.PI * 2);
-          }
-        }
-
-        ctx.fill();
-      }
-
-      const t0 = performance.now();
-      function loop(now) {
-        render((now - t0) / 1000);
-        requestAnimationFrame(loop);
-      }
-      requestAnimationFrame(loop);
-    })();
+        lucide.createIcons();
+      });
+    }
   </script>
 </body>
 </html>
