@@ -8,7 +8,7 @@
   <!-- Шрифты: Unbounded + Inter + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,9 +25,9 @@
             brand: {
               coral: '#FF4820',
               emerald: '#10B981',
-              dark: '#0F1117',
-              gray: '#64748B',
-              bg: '#F5F5F7',
+              dark: '#0A0A0A',
+              zinc: '#6E6E73',
+              light: '#F5F5F7',
             }
           }
         }
@@ -39,349 +39,605 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <style>
+    * { box-sizing: border-box; }
     body {
       background-color: #F5F5F7;
-      color: #0F1117;
-      font-family: 'Inter', sans-serif;
+      color: #0A0A0A;
+      font-family: 'Inter', -apple-system, sans-serif;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    .swiss-grid {
-      background-size: 32px 32px;
-      background-image: 
-        linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+    /* Фоновая сетка с радиальной маской */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(10,10,10,0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(10,10,10,0.045) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .clean-card {
+    /* Огромный фоновый акроним A·L·I */
+    .hero-watermark {
+      position: absolute;
+      right: -2vw;
+      bottom: -4vw;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(200px, 34vw, 520px);
+      line-height: 0.82;
+      letter-spacing: -0.06em;
+      color: rgba(10,10,10,0.04);
+      user-select: none;
+      pointer-events: none;
+      z-index: 0;
+      white-space: nowrap;
+    }
+
+    /* Карточки методологии с акцентной полосой слева */
+    .system-card {
+      position: relative;
       background: #FFFFFF;
-      border: 1px solid rgba(0, 0, 0, 0.06);
-      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(10,10,10,0.08);
+      overflow: hidden;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .clean-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(255, 72, 32, 0.3);
-      box-shadow: 0 20px 35px -10px rgba(255, 72, 32, 0.09);
+    .system-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0;
+      height: 100%;
+      background: #FF4820;
+      transition: width 0.3s ease;
+    }
+    .system-card:hover::before {
+      width: 4px;
+    }
+    .system-card:hover .system-letter {
+      color: rgba(255, 72, 32, 0.12);
+      transform: translateX(-6px);
+    }
+
+    /* Анимированная стрелка на кнопках */
+    .btn-arrow-hover:hover .arrow-icon {
+      transform: translate(3px, -3px);
     }
   </style>
 </head>
-<body class="selection:bg-[#FF4820] selection:text-white relative overflow-x-hidden">
+<body class="selection:bg-[#FF4820] selection:text-white">
 
-  <!-- Фоновая сетка -->
-  <div class="fixed inset-0 pointer-events-none swiss-grid z-0 opacity-70"></div>
+  <!-- 1. ГЛАВНЫЙ ЭКРАН (HERO) -->
+  <section class="relative min-h-screen flex flex-col justify-between px-6 sm:px-10 md:px-16 pt-7 pb-10 overflow-hidden bg-[#F5F5F7] border-b border-black/[0.08]">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-watermark" aria-hidden="true">A·L·I</div>
 
-  <!-- Header -->
-  <header class="relative z-50 border-b border-black/[0.06] bg-[#F5F5F7]/90 backdrop-blur-xl sticky top-0">
-    <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+    <div class="relative z-10 max-w-7xl mx-auto w-full flex flex-col flex-1 justify-between">
       
-      <!-- Логотип -->
-      <a href="#" class="flex flex-col group">
-        <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 bg-[#FF4820] rounded-sm group-hover:rotate-45 transition-transform duration-300"></span>
-          <span class="font-unbounded font-black tracking-tight text-base sm:text-lg text-[#0F1117]">THE.ALI.AGENCY</span>
-        </div>
-        <span class="text-[9px] font-mono tracking-widest text-[#64748B] uppercase pl-4 font-bold">
-          Маркетинг & Продакшн полного цикла
-        </span>
-      </a>
-
-      <!-- Статус и кнопка -->
-      <div class="flex items-center gap-4">
-        <div class="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.06] text-xs font-mono text-[#64748B] shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
-          Принимаем проекты
-        </div>
-
-        <a
-          href="https://t.me/asan_ali"
-          target="_blank"
-          class="px-5 py-2.5 rounded-full bg-[#FF4820] hover:bg-[#ff5d38] text-white text-xs font-unbounded font-bold tracking-wider uppercase transition-all shadow-md shadow-[#FF4820]/25 flex items-center gap-2"
-        >
-          Написать <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+      <!-- Навигация -->
+      <nav class="flex items-center justify-between pb-10">
+        <a href="#" class="inline-flex items-center gap-2 font-unbounded font-black text-lg sm:text-xl tracking-tight text-[#0A0A0A]">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#FF4820] shadow-[0_0_14px_rgba(255,72,32,0.6)]"></span>
+          THE.ALI.AGENCY
         </a>
+
+        <div class="flex items-center gap-3 font-mono text-xs uppercase tracking-wider text-[#6E6E73]">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-black/10 bg-white/70 backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+            <span class="font-bold text-[#0A0A0A]">ALA · KZ</span>
+          </div>
+          <span class="hidden sm:inline font-bold">EST. 2024</span>
+        </div>
+      </nav>
+
+      <!-- Центральный оффер -->
+      <div class="my-auto py-8">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/80 border border-black/[0.08] backdrop-blur-md font-mono text-xs tracking-wider uppercase text-[#0A0A0A] mb-6 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#FF4820] shadow-[0_0_12px_rgba(255,72,32,0.7)] animate-ping"></span>
+          A.L.I. MEDIA // PERFORMANCE & PRODUCTION
+        </div>
+
+        <h1 class="font-unbounded font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight leading-[0.95] text-[#0A0A0A] max-w-5xl mb-6">
+          Качаем трафик.<br>Считаем <em class="not-italic text-[#FF4820]">прибыль.</em>
+        </h1>
+
+        <p class="text-[#4A4A4F] text-base sm:text-xl max-w-2xl leading-relaxed mb-10">
+          Создаем кино-продакшн, векторную графику и запускаем таргет с ежедневным учетом окупаемости в кассе бизнеса.
+        </p>
+
+        <!-- Кнопки действий -->
+        <div class="flex flex-wrap items-center gap-4">
+          <a
+            href="https://t.me/asan_ali"
+            target="_blank"
+            class="btn-arrow-hover inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-[#FF4820] text-white font-unbounded font-bold text-sm tracking-wide shadow-xl shadow-[#FF4820]/30 hover:bg-[#ff5a36] transition-all"
+          >
+            В Telegram
+            <i data-lucide="arrow-up-right" class="arrow-icon w-4 h-4 transition-transform duration-200"></i>
+          </a>
+
+          <a
+            href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
+            target="_blank"
+            class="btn-arrow-hover inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-transparent border border-black/20 text-[#0A0A0A] font-unbounded font-bold text-sm tracking-wide hover:border-black hover:bg-black/[0.03] transition-all"
+          >
+            В WhatsApp
+            <i data-lucide="arrow-up-right" class="arrow-icon w-4 h-4 transition-transform duration-200"></i>
+          </a>
+        </div>
       </div>
+
+      <!-- Метрики в стиле швейцарской сетки -->
+      <div class="grid grid-cols-1 md:grid-cols-3 border-t border-black/[0.12] pt-8 mt-6">
+        <div class="metric-item py-4 md:pr-8 md:border-r border-black/[0.08]">
+          <div class="font-unbounded font-black text-4xl sm:text-6xl text-[#0A0A0A] tracking-tight">
+            AI & <em class="not-italic text-[#FF4820]">Вектор</em>
+          </div>
+          <div class="font-mono text-xs uppercase tracking-wider text-[#6E6E73] mt-2">// Качественная графика</div>
+        </div>
+
+        <div class="metric-item py-4 md:px-8 md:border-r border-black/[0.08]">
+          <div class="font-unbounded font-black text-4xl sm:text-6xl text-[#0A0A0A] tracking-tight">
+            4K <em class="not-italic text-[#FF4820]">RAW</em>
+          </div>
+          <div class="font-mono text-xs uppercase tracking-wider text-[#6E6E73] mt-2">// Свет и кинокамеры</div>
+        </div>
+
+        <div class="metric-item py-4 md:pl-8">
+          <div class="font-unbounded font-black text-4xl sm:text-6xl text-[#0A0A0A] tracking-tight">
+            100<em class="not-italic text-[#FF4820]">%</em>
+          </div>
+          <div class="font-mono text-xs uppercase tracking-wider text-[#6E6E73] mt-2">// Сквозная окупаемость в РНП</div>
+        </div>
+      </div>
+
+      <!-- Подвал hero -->
+      <div class="flex items-center justify-between pt-8 text-xs font-mono uppercase text-[#6E6E73] tracking-widest border-t border-black/[0.06] mt-8">
+        <div class="inline-flex items-center gap-3">
+          <span class="w-12 h-[1px] bg-black/30"></span>
+          <span>SCROLL // ↓</span>
+        </div>
+        <span>24/7 OPS · ALMATY, KAZAKHSTAN</span>
+      </div>
+
     </div>
-  </header>
+  </section>
 
-  <main class="relative z-10">
-
-    <!-- 1. HERO СЕКЦИЯ -->
-    <section class="max-w-6xl mx-auto px-6 pt-16 sm:pt-24 pb-16">
-      
-      <!-- Бейдж -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-xs font-mono text-[#64748B] mb-8 shadow-sm">
-        <span class="w-2 h-2 rounded-full bg-[#FF4820]"></span>
-        ТРАФИК // ПРОДАЖИ // ПРИБЫЛЬ
+  <!-- 2. СЕКЦИЯ УСЛУГ (С КАРТИНКАМИ И КАРТОЧКАМИ) -->
+  <section class="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-black/[0.08]">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-black/10 font-mono text-xs uppercase tracking-wider text-[#0A0A0A] mb-3">
+          <span class="w-2 h-2 rounded-full bg-[#FF4820]"></span>
+          Directions · 01 / 04
+        </div>
+        <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0A0A0A]">
+          Услуги <em class="not-italic text-[#FF4820]">агентства.</em>
+        </h2>
       </div>
-
-      <!-- Главный оффер -->
-      <h1 class="font-unbounded font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.08] text-[#0F1117] max-w-4xl mb-6">
-        Качаем трафик. <br>
-        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4820] to-[#ff7a5c]">
-          Считаем прибыль.
-        </span>
-      </h1>
-
-      <p class="text-base sm:text-xl text-[#64748B] max-w-2xl leading-relaxed mb-10 font-normal">
-        Создаем продающий видеоконтент, сочную инфографику и сайты. Настраиваем рекламу с жестким контролем окупаемости в кассе вашего бизнеса.
+      <p class="text-sm font-mono text-[#6E6E73] max-w-xs mt-4 md:mt-0 uppercase tracking-wide">
+        // Закрываем всю цепочку: от кадра до денег в кассе.
       </p>
+    </div>
 
-      <!-- CTA кнопки -->
-      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 max-w-md mb-16">
-        <a
-          href="https://t.me/asan_ali"
-          target="_blank"
-          class="px-8 py-4 rounded-2xl bg-[#FF4820] hover:bg-[#ff5d38] text-white font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF4820]/30 hover:scale-[1.02]"
-        >
-          <i data-lucide="send" class="w-4 h-4"></i> Написать в Telegram
-        </a>
-        <a
-          href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
-          target="_blank"
-          class="px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-[#0F1117] border border-black/[0.1] font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm"
-        >
-          <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> Написать в WhatsApp
-        </a>
-      </div>
-
-      <!-- Метрики качества -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-black/[0.08]">
-        <div class="p-6 rounded-2xl clean-card">
-          <span class="font-unbounded text-2xl sm:text-3xl font-black text-[#0F1117] block mb-1">Качественная графика</span>
-          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">AI & Векторные визуалы</span>
-        </div>
-        <div class="p-6 rounded-2xl clean-card">
-          <span class="font-unbounded text-2xl sm:text-3xl font-black text-[#FF4820] block mb-1">Киносвет & 4K</span>
-          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">Съемка роликов и Reels</span>
-        </div>
-        <div class="p-6 rounded-2xl clean-card">
-          <span class="font-unbounded text-2xl sm:text-3xl font-black text-[#10B981] block mb-1">100% учет</span>
-          <span class="text-xs font-mono text-[#64748B] uppercase tracking-wider font-semibold">Оцифровка в кассу (РНП)</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. БЛОК УСЛУГ С ВИЗУАЛЬНЫМИ КАРТОЧКАМИ -->
-    <section class="max-w-6xl mx-auto px-6 py-16">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Услуга 1: Таргет -->
+      <div class="system-card rounded-3xl p-8 flex flex-col justify-between group">
         <div>
-          <span class="text-xs font-mono uppercase tracking-widest text-[#FF4820] font-bold">Направления работы</span>
-          <h2 class="font-unbounded font-black text-2xl sm:text-4xl text-[#0F1117] mt-1">Услуги агентства</h2>
+          <div class="flex items-center justify-between mb-6">
+            <span class="font-mono text-xs text-[#FF4820] font-bold uppercase tracking-widest">[ 01 // ТРАФИК ]</span>
+            <div class="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4820] flex items-center justify-center">
+              <i data-lucide="target" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Таргет: Instagram & TikTok</h3>
+          <p class="text-[#4A4A4F] text-sm leading-relaxed mb-6">
+            Системный запуск рекламных кампаний с точным таргетированием. Приводим квалифицированные заявки в WhatsApp и Direct без слива бюджета.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px] text-[#6E6E73]">
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Meta Ads</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">TikTok Ads</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Сквозной учет</span>
+          </div>
         </div>
-        <p class="text-[#64748B] text-sm max-w-sm mt-3 md:mt-0">
-          Закрываем маркетинг под ключ: от идеи и первого кадра до горячих лидов и продаж.
+        <div class="h-52 w-full overflow-hidden rounded-2xl border border-black/5">
+          <img 
+            src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80" 
+            alt="Таргет реклама" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+      </div>
+
+      <!-- Услуга 2: Продакшн -->
+      <div class="system-card rounded-3xl p-8 flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <span class="font-mono text-xs text-[#FF4820] font-bold uppercase tracking-widest">[ 02 // ПРОДАКШН ]</span>
+            <div class="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4820] flex items-center justify-center">
+              <i data-lucide="video" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Съемка видео, Reels & Креативы</h3>
+          <p class="text-[#4A4A4F] text-sm leading-relaxed mb-6">
+            Сценарии с хуками первых секунд, интерьерные локации, предметный киносвет, актеры и динамичный монтаж с высокой удерживаемостью.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px] text-[#6E6E73]">
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Reels / Shorts</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">4K Продакшн</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Рекламные хуки</span>
+          </div>
+        </div>
+        <div class="h-52 w-full overflow-hidden rounded-2xl border border-black/5">
+          <img 
+            src="https://images.unsplash.com/photo-1579632652768-6cb9dcf85912?auto=format&fit=crop&w=900&q=80" 
+            alt="Видео продакшн" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+      </div>
+
+      <!-- Услуга 3: Сайты -->
+      <div class="system-card rounded-3xl p-8 flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <span class="font-mono text-xs text-[#FF4820] font-bold uppercase tracking-widest">[ 03 // WEB & LANDING ]</span>
+            <div class="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4820] flex items-center justify-center">
+              <i data-lucide="layout" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Создание сайтов & Лендингов</h3>
+          <p class="text-[#4A4A4F] text-sm leading-relaxed mb-6">
+            Посадочные страницы и WebApp с быстрой загрузкой и идеальной конверсией. Архитектура экранов заточена под немедленный заказ.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px] text-[#6E6E73]">
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Конверсионные лендинги</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Mobile-first</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Интеграция аналитики</span>
+          </div>
+        </div>
+        <div class="h-52 w-full overflow-hidden rounded-2xl border border-black/5">
+          <img 
+            src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80" 
+            alt="Сайты" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+      </div>
+
+      <!-- Услуга 4: Инфографика маркетплейсов -->
+      <div class="system-card rounded-3xl p-8 flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-6">
+            <span class="font-mono text-xs text-[#FF4820] font-bold uppercase tracking-widest">[ 04 // КАРТОЧКИ ТОВАРОВ ]</span>
+            <div class="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4820] flex items-center justify-center">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Инфографика для Kaspi & WB</h3>
+          <p class="text-[#4A4A4F] text-sm leading-relaxed mb-6">
+            Премиальный визуальный дизайн карточек товаров с векторным текстом без артефактов сжатия. Выделяем продукт на витрине и повышаем CTR.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6 font-mono text-[11px] text-[#6E6E73]">
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Kaspi Магазин</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Wildberries</span>
+            <span class="px-2.5 py-1 rounded-md bg-[#F5F5F7] border border-black/5">Векторный рендер</span>
+          </div>
+        </div>
+        <div class="h-52 w-full overflow-hidden rounded-2xl border border-black/5">
+          <img 
+            src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" 
+            alt="Инфографика маркетплейсов" 
+            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3. СИСТЕМА A.L.I. -->
+  <section class="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-20 border-t border-black/[0.08]">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 pb-8 border-b border-black/[0.08]">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-black/10 font-mono text-xs uppercase tracking-wider text-[#0A0A0A] mb-3">
+          <span class="w-2 h-2 rounded-full bg-[#FF4820]"></span>
+          The system · 02 / 04
+        </div>
+        <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0A0A0A]">
+          Система <em class="not-italic text-[#FF4820]">A.L.I.</em>
+        </h2>
+      </div>
+      <p class="text-sm font-mono text-[#6E6E73] max-w-xs mt-4 md:mt-0 uppercase tracking-wide">
+        // Три слоя. Один результат — чистая прибыль бизнеса.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div class="system-card rounded-3xl p-10 flex flex-col justify-between">
+        <span class="system-letter absolute right-4 top-8 font-unbounded font-black text-9xl text-black/[0.04] pointer-events-none transition-all duration-300">A</span>
+        <div>
+          <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#6E6E73] mb-12">[ 01 ] ACQUISITION</div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Acquisition</h3>
+          <p class="text-sm text-[#4A4A4F] leading-relaxed relative z-10">
+            Системный трафик Meta & TikTok Ads. Без слива бюджета на тесты вслепую.
+          </p>
+        </div>
+      </div>
+
+      <div class="system-card rounded-3xl p-10 flex flex-col justify-between">
+        <span class="system-letter absolute right-4 top-8 font-unbounded font-black text-9xl text-black/[0.04] pointer-events-none transition-all duration-300">L</span>
+        <div>
+          <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#6E6E73] mb-12">[ 02 ] LEADS</div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Leads</h3>
+          <p class="text-sm text-[#4A4A4F] leading-relaxed relative z-10">
+            Посадочные страницы и связки в мессенджерах с высокой конверсией в оплату.
+          </p>
+        </div>
+      </div>
+
+      <div class="system-card rounded-3xl p-10 flex flex-col justify-between">
+        <span class="system-letter absolute right-4 top-8 font-unbounded font-black text-9xl text-black/[0.04] pointer-events-none transition-all duration-300">I</span>
+        <div>
+          <div class="font-mono text-xs font-bold uppercase tracking-wider text-[#6E6E73] mb-12">[ 03 ] IMPACT</div>
+          <h3 class="font-unbounded font-black text-2xl text-[#0A0A0A] mb-3">Impact</h3>
+          <p class="text-sm text-[#4A4A4F] leading-relaxed relative z-10">
+            Влияние на чистую прибыль. Отчеты по РНП каждый день, а не просто клики.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 4. КОНТРАСТ: THEM VS US -->
+  <section class="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-20 border-t border-black/[0.08]">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-black/10 font-mono text-xs uppercase tracking-wider text-[#0A0A0A] mb-4">
+      <span class="w-2 h-2 rounded-full bg-[#FF4820]"></span>
+      Them vs. us · 03 / 04
+    </div>
+    
+    <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0A0A0A] mb-12 max-w-3xl leading-tight">
+      Не делаем «креатив <em class="not-italic text-[#FF4820]">ради креатива</em>».
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-black/[0.1] rounded-3xl overflow-hidden bg-white">
+      <!-- Другие -->
+      <div class="p-8 sm:p-12 border-b md:border-b-0 md:border-r border-black/[0.08] flex flex-col justify-between text-[#8E8E93]">
+        <div>
+          <div class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest mb-6">
+            <span class="w-6 h-[1px] bg-current"></span> Другие агентства
+          </div>
+          <h3 class="font-unbounded font-black text-2xl sm:text-3xl leading-snug mb-4">
+            Отчитываются кликами, показами и шаблонными рилсами.
+          </h3>
+        </div>
+        <p class="text-sm font-mono text-[#8E8E93] mt-8 pt-6 border-t border-black/5">
+          // Картинка есть, но касса бизнеса остается пустой.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <!-- Услуга 1: Таргет -->
-        <div class="rounded-3xl clean-card overflow-hidden flex flex-col justify-between group">
-          <div class="p-8 pb-6">
-            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF4820] flex items-center justify-center mb-6">
-              <i data-lucide="target" class="w-6 h-6"></i>
-            </div>
-            <h3 class="font-unbounded font-bold text-xl text-[#0F1117] mb-3">Запуск таргета: Instagram & TikTok</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed mb-4">
-              Точная настройка рекламы на вашу целевую аудиторию. Выстраиваем стабильный поток заявок в WhatsApp, Direct или на сайт без слива бюджета.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Meta Ads</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">TikTok Ads</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">РНП-аналитика</span>
-            </div>
+      <!-- Мы -->
+      <div class="p-8 sm:p-12 bg-gradient-to-b from-orange-500/[0.04] to-transparent flex flex-col justify-between relative">
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-[#FF4820]"></div>
+        <div>
+          <div class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[#FF4820] font-bold mb-6">
+            <span class="w-6 h-[1px] bg-[#FF4820]"></span> THE.ALI.AGENCY
           </div>
-          <div class="h-48 w-full overflow-hidden px-8 pb-8">
-            <img 
-              src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80" 
-              alt="Таргетированная реклама" 
-              class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500 border border-black/[0.04]"
-            />
-          </div>
-        </div>
+          <h3 class="font-unbounded font-black text-2xl sm:text-3xl text-[#0A0A0A] leading-snug mb-8">
+            Отдаем готовые окупаемые связки под ключ.
+          </h3>
 
-        <!-- Услуга 2: Продакшн -->
-        <div class="rounded-3xl clean-card overflow-hidden flex flex-col justify-between group">
-          <div class="p-8 pb-6">
-            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF4820] flex items-center justify-center mb-6">
-              <i data-lucide="video" class="w-6 h-6"></i>
-            </div>
-            <h3 class="font-unbounded font-bold text-xl text-[#0F1117] mb-3">Съемка видео, Reels & Креативы</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed mb-4">
-              Сценарии с цепляющими хуками первых секунд, интерьерные студии, предметный свет, актеры и динамичный монтаж, который продает.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Instagram Reels</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Рекламные промо</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Мобилография & 4K</span>
-            </div>
-          </div>
-          <div class="h-48 w-full overflow-hidden px-8 pb-8">
-            <img 
-              src="https://images.unsplash.com/photo-1579632652768-6cb9dcf85912?auto=format&fit=crop&w=900&q=80" 
-              alt="Съемка видео" 
-              class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500 border border-black/[0.04]"
-            />
-          </div>
-        </div>
-
-        <!-- Услуга 3: Сайты -->
-        <div class="rounded-3xl clean-card overflow-hidden flex flex-col justify-between group">
-          <div class="p-8 pb-6">
-            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF4820] flex items-center justify-center mb-6">
-              <i data-lucide="layout" class="w-6 h-6"></i>
-            </div>
-            <h3 class="font-unbounded font-bold text-xl text-[#0F1117] mb-3">Создание сайтов & Лендингов</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed mb-4">
-              Быстрые, стильные и удобные посадочные страницы. Продуманный копирайтинг и структура, направленная на одну цель — максимальную конверсию в заявку.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Конверсионные лендинги</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Визитки & Каталоги</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Адаптив под мобильные</span>
-            </div>
-          </div>
-          <div class="h-48 w-full overflow-hidden px-8 pb-8">
-            <img 
-              src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=900&q=80" 
-              alt="Создание сайтов" 
-              class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500 border border-black/[0.04]"
-            />
-          </div>
-        </div>
-
-        <!-- Услуга 4: Инфографика -->
-        <div class="rounded-3xl clean-card overflow-hidden flex flex-col justify-between group">
-          <div class="p-8 pb-6">
-            <div class="w-12 h-12 rounded-2xl bg-orange-50 text-[#FF4820] flex items-center justify-center mb-6">
-              <i data-lucide="sparkles" class="w-6 h-6"></i>
-            </div>
-            <h3 class="font-unbounded font-bold text-xl text-[#0F1117] mb-3">Инфографика для маркетплейсов</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed mb-4">
-              Продающие карточки товаров для Kaspi и Wildberries. Выделяем продукт на фоне сотен конкурентов, закрываем возражения покупателя с первого взгляда.
-            </p>
-            <div class="flex flex-wrap gap-2 pt-2">
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Kaspi Магазин</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Wildberries</span>
-              <span class="px-3 py-1 rounded-full bg-[#F5F5F7] text-[11px] font-mono text-[#64748B]">Качественная графика</span>
-            </div>
-          </div>
-          <div class="h-48 w-full overflow-hidden px-8 pb-8">
-            <img 
-              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=900&q=80" 
-              alt="Инфографика маркетплейсов" 
-              class="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500 border border-black/[0.04]"
-            />
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 3. СИСТЕМА A.L.I. -->
-    <section class="max-w-6xl mx-auto px-6 py-12">
-      <div class="mb-10">
-        <span class="text-xs font-mono uppercase tracking-widest text-[#FF4820] font-bold">Схема работы</span>
-        <h2 class="font-unbounded font-black text-2xl sm:text-4xl text-[#0F1117] mt-1">Методология A.L.I.</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
-          <div>
-            <div class="font-unbounded text-3xl font-black text-[#FF4820] mb-3">[ A ]</div>
-            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Acquisition</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed">
-              Привлечение целевого трафика. Запускаем связки в Meta и TikTok Ads, которые стабильно приводят новых клиентов.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
-            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Системный поток
-          </div>
-        </div>
-
-        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
-          <div>
-            <div class="font-unbounded text-3xl font-black text-[#FF4820] mb-3">[ L ]</div>
-            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Leads</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed">
-              Конверсия в заявки. Приземляем трафик на понятные лендинги и чат-воронки, где клиенту легко сделать заказ.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
-            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Высокая конверсия
-          </div>
-        </div>
-
-        <div class="p-8 rounded-3xl clean-card flex flex-col justify-between">
-          <div>
-            <div class="font-unbounded text-3xl font-black text-[#FF4820] mb-3">[ I ]</div>
-            <h3 class="font-unbounded font-bold text-lg text-[#0F1117] mb-2">Impact</h3>
-            <p class="text-sm text-[#64748B] leading-relaxed">
-              Рост чистой прибыли. Ведем прозрачную ежедневную отчетность по окупаемости каждого вложенного тенге.
-            </p>
-          </div>
-          <div class="text-[11px] font-mono text-[#64748B] pt-6 border-t border-black/[0.05] mt-6 flex items-center gap-1.5">
-            <i data-lucide="check" class="w-3.5 h-3.5 text-[#10B981]"></i> Оцифрованная касса
+          <div class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase text-[#0A0A0A]">
+            <span class="px-3 py-1.5 rounded-lg border border-black/15 bg-white/70">сценарий</span>
+            <span class="text-[#FF4820] font-bold">→</span>
+            <span class="px-3 py-1.5 rounded-lg border border-black/15 bg-white/70">съемка на кинокамеру</span>
+            <span class="text-[#FF4820] font-bold">→</span>
+            <span class="px-3 py-1.5 rounded-lg border border-black/15 bg-white/70 font-bold">графика <em class="not-italic text-[#FF4820]">5000 px</em></span>
+            <span class="text-[#FF4820] font-bold">→</span>
+            <span class="px-3 py-1.5 rounded-lg border border-black/15 bg-white/70">таргет</span>
+            <span class="text-[#FF4820] font-bold">→</span>
+            <span class="px-3 py-1.5 rounded-lg border border-black/15 bg-white/70 font-bold">оцифрованная <em class="not-italic text-[#FF4820]">касса</em></span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- 4. ЭКОСИСТЕМА: TAP -->
-    <section class="max-w-6xl mx-auto px-6 py-6">
-      <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-white via-white to-orange-50 border border-black/[0.08] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-2xl bg-[#FF4820] flex items-center justify-center text-white font-unbounded font-black text-lg shrink-0">
-            TAP
+  <!-- 5. ПЛАТФОРМА TAP (АДАПТИРОВАНА ПОД ТЕНГЕ И КАЗАХСТАН) -->
+  <section class="max-w-7xl mx-auto px-6 sm:px-10 md:px-16 py-20 border-t border-black/[0.08]">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <div class="lg:col-span-6">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-black/10 font-mono text-xs uppercase tracking-wider text-[#0A0A0A] mb-4">
+          <span class="w-2 h-2 rounded-full bg-[#FF4820] shadow-[0_0_10px_rgba(255,72,32,0.6)]"></span>
+          TAP // Traffic Automation Platform
+        </div>
+        <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0A0A0A] leading-tight mb-6">
+          Собственный <em class="not-italic text-[#FF4820]">софт</em> для запуска рекламы.
+        </h2>
+        <p class="text-[#4A4A4F] text-base sm:text-lg leading-relaxed mb-8 max-w-xl">
+          Разработчики собственной платформы автозапуска рекламы для селлеров маркетплейсов и e-commerce в Казахстане.
+        </p>
+
+        <div class="grid grid-cols-2 gap-8 border-t border-black/[0.1] pt-6 max-w-md">
+          <div>
+            <div class="font-unbounded font-black text-3xl sm:text-4xl text-[#0A0A0A]">
+              24<em class="not-italic text-[#FF4820]">/7</em>
+            </div>
+            <div class="font-mono text-xs uppercase text-[#6E6E73] mt-2">// автозапуск кампаний</div>
           </div>
           <div>
-            <h4 class="font-unbounded font-bold text-base text-[#0F1117]">Traffic Automation Platform</h4>
-            <p class="text-xs text-[#64748B] mt-0.5">Собственная разработка агентства для автоматизации запуска рекламы для селлеров</p>
+            <div class="font-unbounded font-black text-3xl sm:text-4xl text-[#0A0A0A]">
+              <em class="not-italic text-[#FF4820]">×</em>3.2
+            </div>
+            <div class="font-mono text-xs uppercase text-[#6E6E73] mt-2">// средний рост ДРР</div>
           </div>
         </div>
-        <div class="text-xs font-mono text-[#64748B] bg-white border border-black/[0.08] px-4 py-2 rounded-xl whitespace-nowrap shadow-sm font-semibold">
-          Продукт THE.ALI.AGENCY
+      </div>
+
+      <!-- Мокап интерфейса дашборда TAP в тенге -->
+      <div class="lg:col-span-6">
+        <div class="rounded-3xl bg-white/80 backdrop-blur-xl border border-black/10 p-6 sm:p-8 shadow-2xl">
+          <div class="flex items-center justify-between pb-4 border-b border-black/[0.08] mb-6">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#FF4820]"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-black/10"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-black/10"></span>
+            </div>
+            <div class="font-mono text-xs text-[#6E6E73] uppercase tracking-wider">tap.os / dashboard</div>
+            <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mb-3">
+            <div class="p-4 rounded-2xl bg-white border border-black/[0.08] shadow-sm">
+              <span class="font-mono text-[10px] text-[#6E6E73] uppercase tracking-wider block mb-1">// spend today</span>
+              <div class="font-unbounded font-black text-xl text-[#0A0A0A]">
+                480<em class="not-italic text-[#FF4820]">.000 ₸</em>
+              </div>
+              <div class="h-1 bg-black/5 rounded-full mt-3 overflow-hidden">
+                <div class="h-full bg-[#FF4820] w-[75%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-black/[0.08] shadow-sm">
+              <span class="font-mono text-[10px] text-[#6E6E73] uppercase tracking-wider block mb-1">// РНП окупаемость</span>
+              <div class="font-unbounded font-black text-xl text-[#0A0A0A]">
+                2.4<em class="not-italic text-[#FF4820]">×</em>
+              </div>
+              <div class="h-1 bg-black/5 rounded-full mt-3 overflow-hidden">
+                <div class="h-full bg-[#10B981] w-[88%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-black/[0.08] shadow-sm">
+              <span class="font-mono text-[10px] text-[#6E6E73] uppercase tracking-wider block mb-1">// CR конверсия</span>
+              <div class="font-unbounded font-black text-xl text-[#0A0A0A]">
+                7.4<em class="not-italic text-[#FF4820]">%</em>
+              </div>
+              <div class="h-1 bg-black/5 rounded-full mt-3 overflow-hidden">
+                <div class="h-full bg-[#FF4820] w-[65%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-white border border-black/[0.08] shadow-sm">
+              <span class="font-mono text-[10px] text-[#6E6E73] uppercase tracking-wider block mb-1">// live связки</span>
+              <div class="font-unbounded font-black text-xl text-[#0A0A0A]">
+                42 <span class="text-xs font-mono text-[#6E6E73] font-normal">активно</span>
+              </div>
+              <div class="h-1 bg-black/5 rounded-full mt-3 overflow-hidden">
+                <div class="h-full bg-[#10B981] w-[95%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Нижняя широкая плашка с маркетплейсами -->
+          <div class="p-4 rounded-2xl bg-white border border-black/[0.08] shadow-sm">
+            <span class="font-mono text-[10px] text-[#6E6E73] uppercase tracking-wider block mb-2">// marketplace выручка</span>
+            <div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-black/5">
+              <div>
+                <span class="font-mono text-[9px] uppercase text-[#6E6E73] block">kaspi</span>
+                <span class="font-unbounded font-black text-sm text-[#0A0A0A]">1.8<em class="not-italic text-[#FF4820]">M ₸</em></span>
+              </div>
+              <div>
+                <span class="font-mono text-[9px] uppercase text-[#6E6E73] block">wildberries</span>
+                <span class="font-unbounded font-black text-sm text-[#0A0A0A]">940<em class="not-italic text-[#FF4820]">K ₸</em></span>
+              </div>
+              <div>
+                <span class="font-mono text-[9px] uppercase text-[#6E6E73] block">direct / wa</span>
+                <span class="font-unbounded font-black text-sm text-[#0A0A0A]">420<em class="not-italic text-[#FF4820]">K ₸</em></span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </section>
 
-    <!-- 5. КОНТАКТЫ (ПРЯМОЙ ПЕРЕХОД) -->
-    <section class="max-w-3xl mx-auto px-6 py-20 text-center">
-      <h2 class="font-unbounded font-black text-3xl sm:text-5xl text-[#0F1117] mb-4">
-        Обсудить проект
+    </div>
+  </section>
+
+  <!-- 6. КОНТАКТЫ (ТЕМНЫЙ КОНТРАСТНЫЙ БЛОК) -->
+  <section class="bg-[#0A0A0A] text-[#F5F5F7] px-6 sm:px-10 md:px-16 py-24 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none opacity-20 hero-grid"></div>
+    <div class="absolute -right-32 top-10 w-[500px] h-[500px] bg-[#FF4820]/15 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/15 font-mono text-xs uppercase tracking-wider text-[#F5F5F7] mb-6">
+        <span class="w-2 h-2 rounded-full bg-[#FF4820] shadow-[0_0_12px_rgba(255,72,32,0.8)]"></span>
+        Contact · 04 / 04
+      </div>
+
+      <h2 class="font-unbounded font-black text-4xl sm:text-6xl md:text-8xl leading-tight mb-6">
+        Обсудить <em class="not-italic text-[#FF4820]">проект.</em>
       </h2>
-      <p class="text-sm sm:text-base text-[#64748B] mb-10 max-w-md mx-auto leading-relaxed">
-        Напишите напрямую в Telegram или WhatsApp. Разберем текущую ситуацию и предложим понятный план действий.
+      <p class="text-white/70 text-base sm:text-xl max-w-xl leading-relaxed mb-12">
+        Напишите напрямую основателю агентства — без заполнения скучных брифов и анкет.
       </p>
 
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <!-- Две крупные кнопки -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl">
         <a
           href="https://t.me/asan_ali"
           target="_blank"
-          class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-[#FF4820] hover:bg-[#ff5d38] text-white font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#FF4820]/30 hover:scale-105"
+          class="group p-8 rounded-3xl bg-[#FF4820] text-white flex items-center justify-between shadow-2xl shadow-[#FF4820]/30 hover:bg-[#ff5a36] transition-all hover:-translate-y-1"
         >
-          <i data-lucide="send" class="w-4 h-4"></i> Написать в Telegram
+          <div>
+            <span class="font-mono text-xs uppercase tracking-widest block opacity-75 mb-1">// preferred</span>
+            <span class="font-unbounded font-black text-2xl sm:text-3xl">Telegram</span>
+          </div>
+          <span class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-[-45deg] transition-transform duration-300">
+            <i data-lucide="arrow-right" class="w-6 h-6"></i>
+          </span>
         </a>
+
         <a
           href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY"
           target="_blank"
-          class="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white hover:bg-slate-50 text-[#0F1117] border border-black/[0.1] font-unbounded font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-sm"
+          class="group p-8 rounded-3xl bg-white/[0.05] border border-white/15 backdrop-blur-xl text-white flex items-center justify-between hover:bg-white/10 hover:border-white/30 transition-all hover:-translate-y-1"
         >
-          <i data-lucide="message-circle" class="w-4 h-4 text-[#10B981]"></i> Написать в WhatsApp
+          <div>
+            <span class="font-mono text-xs uppercase tracking-widest block text-white/50 mb-1">// alt channel</span>
+            <span class="font-unbounded font-black text-2xl sm:text-3xl">WhatsApp</span>
+          </div>
+          <span class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:rotate-[-45deg] transition-transform duration-300">
+            <i data-lucide="arrow-right" class="w-6 h-6"></i>
+          </span>
         </a>
       </div>
-    </section>
 
-  </main>
+      <!-- Футер -->
+      <div class="mt-24 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs uppercase text-white/50 tracking-wider">
+        <span>© THE.ALI.AGENCY · 2026</span>
+        <span>ALMATY, KAZAKHSTAN · 24/7 OPS</span>
+      </div>
 
-  <!-- Footer -->
-  <footer class="border-t border-black/[0.06] py-10 text-center text-xs text-[#64748B] font-mono">
-    © THE.ALI.AGENCY. ВСЕ ПРАВА ЗАЩИЩЕНЫ. АЛМАТЫ, КАЗАХСТАН.
-  </footer>
+    </div>
+  </section>
 
   <script>
     lucide.createIcons();
+
+    // Плавное проявление цифр при загрузке
+    window.addEventListener('DOMContentLoaded', () => {
+      const metrics = document.querySelectorAll('.metric-item');
+      metrics.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateY(16px)';
+        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        setTimeout(() => {
+          item.style.opacity = '1';
+          item.style.transform = 'translateY(0)';
+        }, 150 + index * 120);
+      });
+    });
   </script>
 </body>
 </html>
