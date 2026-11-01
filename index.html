@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kindred — Reconnecting Human Creativity</title>
+  <title>THE.ALI.AGENCY — Full-Cycle Marketing & Production</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg: #f7f7f5;
-      --ink: #111111;
-      --mute: #9a9a9a;
-      --sub: #7b7b7b;
+      --bg: #0A0B0E;
+      --card-bg: rgba(18, 20, 28, 0.75);
+      --ink: #FFFFFF;
+      --mute: #9CA3AF;
+      --sub: #6B7280;
+      --coral: #FF4820;
+      --emerald: #10B981;
     }
 
     * {
@@ -22,23 +27,15 @@
     }
 
     html, body {
-      height: 100%;
       background-color: var(--bg);
       color: var(--ink);
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
+      scroll-behavior: smooth;
     }
 
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 660px;
-      overflow: hidden;
-      background-color: var(--bg);
-    }
-
+    /* Фоновый холст с LED-матрицей */
     canvas#dots {
       position: absolute;
       inset: 0;
@@ -46,291 +43,527 @@
       height: 100%;
       display: block;
       z-index: 1;
-    }
-
-    nav, .copy, .logos {
-      position: relative;
-      z-index: 3;
-    }
-
-    /* Nav */
-    nav {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: clamp(18px, 2.6vw, 40px);
-      padding-top: 36px;
-      font-size: 13.5px;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-right: 10px;
-      text-decoration: none;
-      color: var(--ink);
-      font-weight: 600;
-      font-size: 15px;
-      letter-spacing: -0.01em;
-    }
-
-    .brand svg {
-      width: 16px;
-      height: 18px;
-      fill: currentColor;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: clamp(18px, 2.6vw, 40px);
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: #3a3a3a;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .nav-links a:hover {
-      color: #000;
-    }
-
-    .btn-signin {
-      background: var(--ink);
-      color: #fff;
-      padding: 10px 21px;
-      border-radius: 999px;
-      font-weight: 500;
-      text-decoration: none;
-      margin-left: 10px;
-      display: inline-block;
-      transition: transform 0.25s ease, background-color 0.2s ease;
-    }
-
-    .btn-signin:hover {
-      transform: translateY(-1px);
-    }
-
-    /* Copy block */
-    .copy {
-      position: absolute;
-      left: 50%;
-      top: 24.5%;
-      transform: translateX(-50%);
-      text-align: center;
-      width: min(92vw, 720px);
       pointer-events: none;
     }
 
-    .copy a {
-      pointer-events: auto;
+    /* Hero контейнер */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background-color: var(--bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .copy h1 {
-      font-weight: 500;
-      letter-spacing: -0.035em;
-      line-height: 1.04;
-      font-size: clamp(38px, 3.75vw, 68px);
+    /* Навигация */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px clamp(20px, 4vw, 60px) 0;
     }
 
-    .copy h1 .line-mute {
-      display: block;
+    .brand {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      width: 8px;
+      height: 8px;
+      background: var(--coral);
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .brand-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      color: var(--mute);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
       color: var(--mute);
     }
 
-    .copy h1 .line-ink {
-      display: block;
-      color: var(--ink);
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 2s infinite;
     }
 
-    .copy p {
-      margin-top: 20px;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 340px;
-      color: var(--sub);
-      font-size: clamp(13px, 1.02vw, 15.5px);
-      line-height: 1.4;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Центральный смысловой блок */
+    .copy {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .badge-ali {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255, 72, 32, 0.08);
+      border: 1px solid rgba(255, 72, 32, 0.3);
+      color: var(--coral);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      margin-bottom: 24px;
+    }
+
+    .copy h1 {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      font-size: clamp(34px, 4.5vw, 62px);
+      margin-bottom: 24px;
+    }
+
+    .copy h1 .line-lead {
+      color: var(--mute);
+      display: block;
+      font-weight: 500;
+      font-size: 0.85em;
+      margin-bottom: 8px;
+    }
+
+    .copy h1 .line-highlight {
+      color: #fff;
+      background: linear-gradient(180deg, #FFFFFF 0%, #D1D5DB 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .copy p.subline {
+      margin: 0 auto;
+      max-width: 580px;
+      color: var(--mute);
+      font-size: clamp(14px, 1.1vw, 16.5px);
+      line-height: 1.6;
+    }
+
+    /* Кнопки действий */
+    .cta-group {
+      margin-top: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .cta-wrapper {
-      display: inline-block;
       position: relative;
-      margin-top: clamp(34px, 3.6vw, 52px);
+      display: inline-block;
     }
 
     .cta-glow {
       position: absolute;
-      left: 10%;
-      right: 10%;
+      left: 8%;
+      right: 8%;
       bottom: -6px;
-      height: 16px;
+      height: 18px;
       border-radius: 50%;
-      background: linear-gradient(90deg, #ffcf5a, #7dffa8, #5ad7ff, #9b7bff, #ff6fd8, #ffb36b);
-      filter: blur(9px);
-      opacity: 0.85;
-      transition: opacity 0.3s ease, filter 0.3s ease, bottom 0.3s ease;
+      background: linear-gradient(90deg, #FF4820, #FF833E, #FF2E00);
+      filter: blur(12px);
+      opacity: 0.75;
+      transition: all 0.3s ease;
       z-index: 1;
       pointer-events: none;
     }
 
-    .btn-join {
+    .btn-primary {
       position: relative;
       z-index: 2;
-      display: inline-block;
-      background: var(--ink);
-      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--coral);
+      color: #FFFFFF;
       font-size: 13.5px;
-      font-weight: 500;
+      font-weight: 600;
       text-decoration: none;
-      padding: 11px 20px;
+      padding: 13px 28px;
       border-radius: 999px;
-      transition: transform 0.3s ease;
+      transition: transform 0.25s ease, background 0.25s ease;
     }
 
-    .cta-wrapper:hover .btn-join {
-      transform: translateY(-1px);
+    .cta-wrapper:hover .btn-primary {
+      transform: translateY(-2px);
+      background: #ff5934;
     }
 
     .cta-wrapper:hover .cta-glow {
       opacity: 1;
-      filter: blur(12px);
-      bottom: -9px;
+      filter: blur(16px);
+      bottom: -8px;
     }
 
-    /* Partner logos */
-    .logos {
-      position: absolute;
-      bottom: clamp(28px, 6vh, 64px);
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: clamp(26px, 4.6vw, 66px);
-      flex-wrap: wrap;
-      padding: 0 16px;
-      color: #8d8d8d;
-      font-size: clamp(14px, 1.18vw, 17px);
-      font-weight: 500;
-      letter-spacing: -0.01em;
-    }
-
-    .logo-item {
+    .btn-secondary {
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      padding: 13px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      transition: all 0.25s ease;
     }
 
-    .logo-item svg {
-      width: 17px;
-      height: 17px;
-      fill: currentColor;
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
     }
 
-    /* Responsive */
+    /* Нижняя строка метрик */
+    .hero-footer {
+      position: relative;
+      z-index: 10;
+      padding: 24px clamp(20px, 4vw, 60px) 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .tagline-ticker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--sub);
+      text-transform: uppercase;
+    }
+
+    .metrics-row {
+      display: flex;
+      gap: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--mute);
+    }
+
+    .metrics-row span b {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Контентные секции */
+    section.section-block {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 90px 24px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .section-head {
+      margin-bottom: 48px;
+    }
+
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Карточки A.L.I. */
+    .ali-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 20px;
+    }
+
+    .ali-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 36px 30px;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ali-card:hover {
+      border-color: rgba(255, 72, 32, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px rgba(255, 72, 32, 0.12);
+    }
+
+    .ali-letter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--coral);
+      margin-bottom: 16px;
+    }
+
+    .ali-card h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .ali-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--mute);
+    }
+
+    /* Манифест */
+    .manifesto-box {
+      background: linear-gradient(135deg, rgba(255, 72, 32, 0.05) 0%, rgba(18, 20, 28, 0.8) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: clamp(32px, 5vw, 60px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    @media (max-width: 820px) {
+      .manifesto-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .manifesto-text p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--mute);
+      margin-top: 16px;
+    }
+
+    .spec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spec-item {
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .spec-item h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .spec-item p {
+      font-size: 12.5px;
+      color: var(--mute);
+      line-height: 1.4;
+    }
+
+    /* Футер */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 24px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--sub);
+      position: relative;
+      z-index: 5;
+    }
+
     @media (max-width: 760px) {
       nav {
-        justify-content: space-between;
-        padding: 22px 18px 0;
+        padding-top: 20px;
       }
-      .nav-links {
+      .nav-status {
         display: none;
       }
-      .brand {
-        margin-right: 0;
-      }
-      .btn-signin {
-        margin-left: 0;
-      }
-      .copy {
-        top: 20%;
-      }
-      .logos {
-        gap: 14px 24px;
-        font-size: 13px;
+      .hero-footer {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- HERO SECTION С CANVAS ЭФФЕКТОМ DOT-MATRIX -->
   <section class="hero">
     <canvas id="dots"></canvas>
 
     <nav>
       <a href="#" class="brand">
-        <svg viewBox="0 0 16 18">
-          <path d="M2 0h4v18H2zM7 9c3-1 5-4 6-9h3c-1 5-3 8-6 9 3 1 5 4 6 9h-3c-1-5-3-8-6-9z"/>
-        </svg>
-        <span>Kindred</span>
+        <span class="brand-title"><span class="brand-badge"></span> THE.ALI.AGENCY</span>
+        <span class="brand-sub">Acquisition // Leads // Impact</span>
       </a>
 
-      <ul class="nav-links">
-        <li><a href="#">Platform</a></li>
-        <li><a href="#">Marketplace</a></li>
-        <li><a href="#">Creators</a></li>
-        <li><a href="#">Resources</a></li>
-        <li><a href="#">Company</a></li>
-      </ul>
-
-      <a href="#" class="btn-signin">Sign In</a>
+      <div class="nav-status">
+        <span class="status-dot"></span>
+        <span>Open for Q1–Q2 Projects</span>
+      </div>
     </nav>
 
     <div class="copy">
+      <div class="badge-ali">FULL-CYCLE MARKETING & PRODUCTION</div>
+      
       <h1>
-        <span class="line-mute">Reconnecting</span>
-        <span class="line-ink">Human Creativity.</span>
+        <span class="line-lead">Пока другие тестируют наугад —</span>
+        <span class="line-highlight">мы строим окупаемые связки, которые приносят кассу.</span>
       </h1>
-      <p>We’re not building another platform. We’re building a place where people belong.</p>
-      <div class="cta-wrapper">
-        <div class="cta-glow"></div>
-        <a href="#" class="btn-join">Join the circle</a>
+
+      <p class="subline">
+        Объединяем сильный визуальный продакшн на кинокамеры, векторную графику 5000 px и перформанс-таргет с ежедневным контролем окупаемости в РНП.
+      </p>
+
+      <div class="cta-group">
+        <div class="cta-wrapper">
+          <div class="cta-glow"></div>
+          <!-- Замените @asan_ali на ваш реальный Telegram -->
+          <a href="https://t.me/asan_ali" target="_blank" class="btn-primary">
+            Обсудить в Telegram →
+          </a>
+        </div>
+        <!-- Замените номер 77000000000 на ваш реальный WhatsApp -->
+        <a href="https://wa.me/77000000000?text=Здравствуйте!%20Хочу%20обсудить%20проект%20с%20THE.ALI.AGENCY" target="_blank" class="btn-secondary">
+          Написать в WhatsApp
+        </a>
       </div>
     </div>
 
-    <div class="logos">
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M3 15c0-7 5-12 14-12-1 9-6 14-13 13l-1 2-2-1z"/>
-        </svg>
-        <span>Lumenix</span>
+    <div class="hero-footer">
+      <div class="tagline-ticker">
+        ENGINEERED GROWTH // METRICS OVER NOISE
       </div>
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M10 1l8 4.5v9L10 19l-8-4.5v-9zM10 6l-4 2.3v4.4L10 15l4-2.3V8.3z"/>
-        </svg>
-        <span>Velora</span>
-      </div>
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M1 5q4.5-3 9 0t9 0v3q-4.5 3-9 0t-9 0zm0 7q4.5-3 9 0t9 0v3q-4.5 3-9 0t-9 0z"/>
-        </svg>
-        <span>Nimbus</span>
-      </div>
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M10 1a9 9 0 110 18 9 9 0 010-18zm0 3a6 6 0 100 12 6 6 0 000-12zm0 3a3 3 0 110 6 3 3 0 010-6z"/>
-        </svg>
-        <span>Quanta</span>
-      </div>
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M1 17L7 6l3 5 3-7 6 13z"/>
-        </svg>
-        <span>Solstice</span>
-      </div>
-      <div class="logo-item">
-        <svg viewBox="0 0 20 20">
-          <path d="M10 1l9 4-9 4-9-4zm-9 8l9 4 9-4v3l-9 4-9-4zm0 5l9 4 9-4v2l-9 4-9-4z"/>
-        </svg>
-        <span>Parallax</span>
+      <div class="metrics-row">
+        <span><b>5000 px</b> Вектор</span>
+        <span><b>4K RAW</b> Киносвет</span>
+        <span><b>Meta & TikTok</b> Ads</span>
       </div>
     </div>
   </section>
 
+  <!-- СЕКЦИЯ МЕТОДОЛОГИИ A.L.I. -->
+  <section class="section-block">
+    <div class="section-head">
+      <span class="section-tag">Система окупаемости</span>
+      <h2 class="section-title">Методология A.L.I.</h2>
+    </div>
+
+    <div class="ali-grid">
+      <div class="ali-card">
+        <div class="ali-letter">[ A ]</div>
+        <h3>Acquisition</h3>
+        <p>Привлечение системного трафика. Управляемые потоки целевой аудитории через Meta Ads и TikTok Ads без слива бюджета на широкую аудиторию.</p>
+      </div>
+
+      <div class="ali-card">
+        <div class="ali-letter">[ L ]</div>
+        <h3>Leads</h3>
+        <p>Конверсия в квалифицированные заявки. Высокоскоростные посадочные страницы, мессенджер-воронки и кликабельные витрины под ключ.</p>
+      </div>
+
+      <div class="ali-card">
+        <div class="ali-letter">[ I ]</div>
+        <h3>Impact</h3>
+        <p>Прямое влияние на кассу и чистую прибыль. Оцифровка связок в ежедневных РНП-дашбордах вместо пустых отчетов по кликам и охватам.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- СЕКЦИЯ МАНИФЕСТА -->
+  <section class="section-block">
+    <div class="manifesto-box">
+      <div class="manifesto-text">
+        <span class="section-tag">Позиционирование</span>
+        <h2 class="section-title">Никакого «креатива ради креатива».</h2>
+        <p>
+          Большинство агентств отчитываются просмотрами и картинками. Мы соединяем премиальный продакшн с жесткой перформанс-аналитикой, чтобы визуал изначально продавал.
+        </p>
+      </div>
+
+      <div class="spec-list">
+        <div class="spec-item">
+          <h4>Продакшн полного цикла</h4>
+          <p>Сценарии с хуками первых 3 секунд, интерьерные локации, предметный киносвет, актеры и динамичный монтаж.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Векторный дизайн 5000 px</h4>
+          <p>Инфографика карточек товаров и баннеры в сверхвысоком разрешении без пикселей при любом зуме.</p>
+        </div>
+        <div class="spec-item">
+          <h4>Сквозная оцифровка в РНП</h4>
+          <p>Ежедневный учет стоимости лида, конверсии посадки и вклада каждого рекламного креатива в общую выручку.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ФУТЕР -->
+  <footer>
+    <p>© THE.ALI.AGENCY. ALL RIGHTS RESERVED. ALMATY, KAZAKHSTAN.</p>
+  </footer>
+
+  <!-- CANVAS DOT-MATRIX HANDS ENGINE (Vanillajs) -->
   <script>
     (function () {
       const canvas = document.getElementById('dots');
@@ -348,7 +581,6 @@
       const TILES = {};
       let tilesReady = false;
 
-      // Offscreen field canvases for sampling luminance
       const fA = document.createElement('canvas');
       const ctxA = fA.getContext('2d', { willReadFrequently: true });
       const fB = document.createElement('canvas');
@@ -374,7 +606,6 @@
         return smooth(on, on + dur, t) * (1 - smooth(off, off + dur, t));
       }
 
-      // Load image and prepare high-quality sliced tiles
       const sheet = new Image();
       sheet.crossOrigin = 'anonymous';
       sheet.onload = () => {
@@ -404,14 +635,15 @@
       sheet.src = SHEET_URL;
 
       function resize() {
-        W = window.innerWidth;
-        H = window.innerHeight;
+        const heroEl = document.querySelector('.hero');
+        W = heroEl ? heroEl.clientWidth : window.innerWidth;
+        H = heroEl ? heroEl.clientHeight : window.innerHeight;
         DPR = Math.min(2, window.devicePixelRatio || 1);
 
         canvas.width = W * DPR;
         canvas.height = H * DPR;
 
-        step = Math.max(5, W / 205);
+        step = Math.max(5, W / 210);
         rowStep = step * 2.05;
         cols = Math.ceil(W / step);
         rows = Math.ceil(H / rowStep);
@@ -448,18 +680,16 @@
           return;
         }
 
-        // 1. Prepare fields fA and fB
         ctxA.fillStyle = '#ffffff';
         ctxA.fillRect(0, 0, cols, rows);
         ctxB.fillStyle = '#ffffff';
         ctxB.fillRect(0, 0, cols, rows);
 
         const isPortrait = H > W;
-        const hw = isPortrait ? W * 0.66 : W * 0.53;
+        const hw = isPortrait ? W * 0.66 : W * 0.52;
         const hh = hw * ((0.40 * 1520) / (0.47 * 2688));
-        const cy = isPortrait ? H * 0.66 : H * 0.54;
+        const cy = isPortrait ? H * 0.64 : H * 0.52;
 
-        // Draw hands into both fields
         for (let handIdx = 0; handIdx < 2; handIdx++) {
           const isLeft = handIdx === 0;
           const ph = isLeft ? 0 : Math.PI;
@@ -472,7 +702,6 @@
           const pivotX = isLeft ? 0 : W;
           const pivotY = cy;
 
-          // Helper to apply hand transform to an offscreen context
           const applyHandTransform = (targetCtx) => {
             targetCtx.save();
             targetCtx.scale(cols / W, rows / H);
@@ -482,12 +711,10 @@
             targetCtx.translate(-pivotX, -pivotY);
           };
 
-          // Draw Pose A into fA
           applyHandTransform(ctxA);
           ctxA.drawImage(isLeft ? TILES.LA : TILES.RA, x, cy - hh / 2, hw, hh);
           ctxA.restore();
 
-          // Draw Pose B into fB
           applyHandTransform(ctxB);
           ctxB.drawImage(isLeft ? TILES.LB : TILES.RB, x, cy - hh / 2, hw, hh);
           ctxB.restore();
@@ -496,13 +723,11 @@
         const imgDataA = ctxA.getImageData(0, 0, cols, rows).data;
         const imgDataB = ctxB.getImageData(0, 0, cols, rows).data;
 
-        // Transitions (Glitch Dissolve)
         const mL = mixAt(t, 6.2, 14.6, 1.6);
         const mR = mixAt(t, 2.4, 10.4, 1.6);
 
         const tick = Math.floor(t * 7);
 
-        // Precompute row shift glitches
         const rowShifts = new Int32Array(rows);
         for (let j = 0; j < rows; j++) {
           if (hash(j, tick) > 0.965) {
@@ -512,10 +737,11 @@
           }
         }
 
-        ctx.fillStyle = '#0d0d0d';
+        // Цвет светодиодов — чистый белый со свечением в темной теме
+        ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
 
-        const quietWidth = isPortrait ? 0.44 : 0.2;
+        const quietWidth = isPortrait ? 0.44 : 0.22;
         const quietCenterY = isPortrait ? 0.33 : 0.385;
 
         for (let j = 0; j < rows; j++) {
@@ -529,7 +755,6 @@
             const m = isLeftHalf ? mL : mR;
             const useB = seed < m;
 
-            // Apply horizontal row-glitch shift
             let sampleI = i - shift;
             if (sampleI < 0) sampleI = 0;
             if (sampleI >= cols) sampleI = cols - 1;
@@ -543,7 +768,6 @@
 
             if (v <= 0.001) continue;
 
-            // Dissolve front thinning & sparkle
             if (m > 0.001 && m < 0.999) {
               const diff = Math.abs(seed - m);
               if (diff < 0.12) {
@@ -554,20 +778,16 @@
               }
             }
 
-            // Shimmer
             v *= 0.86 + 0.14 * Math.sin(t * 3.2 + seed * 40);
 
-            // Centre fade (fingertips dissolve before meeting)
             const cx = Math.abs((i + 0.5) / cols - 0.5);
             v *= smooth(0.035, 0.11, cx);
 
-            // Copy quiet zone
             const ex = cx / quietWidth;
             v *= smooth(0.85, 1.25, Math.hypot(ex, ey));
 
             if (v <= 0.001) continue;
 
-            // Quantise to LED levels
             let level = 0;
             for (let k = LEVELS.length - 1; k >= 0; k--) {
               if (v >= LEVELS[k] - 0.13) {
@@ -580,7 +800,7 @@
 
             let radius = R * level;
             if (level === LEVELS[1]) {
-              radius = R * 0.38; // pinpoint dots
+              radius = R * 0.38;
             }
 
             const posX = (i + 0.5) * step;
@@ -591,8 +811,6 @@
 
         ctx.fill();
       }
-
-      window.__render = render;
 
       const t0 = performance.now();
       function loop(now) {
